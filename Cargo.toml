@@ -1,0 +1,18 @@
+[package]
+name = "bevy-ui-dsl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy_ui = "0.9"
+bevy_text = "0.9"
+bevy_ecs = "0.9"
+bevy_hierarchy = "0.9"
+bevy_asset = "0.9"
+bevy_render = "0.9"
+
+[dev-dependencies]
+bevy = "0.9"
+
+[profile.dev]
+opt-level = 1
