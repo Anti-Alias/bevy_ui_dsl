@@ -1,6 +1,6 @@
 use bevy_text::{TextStyle, TextSection};
 use bevy_ecs::system::Commands;
-use bevy_ui::node_bundles::{NodeBundle, TextBundle};
+use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle};
 use bevy_hierarchy::{ChildBuilder, BuildChildren};
 
 
@@ -46,4 +46,35 @@ pub fn text(
         style: font(),
     });
     parent.spawn(bundle);
+}
+
+/// Spawns a [`ButtonBundle`] as a child of the parent specified.
+/// Also specifies children in the form of a callback.
+pub fn button_with(
+    parent: &mut ChildBuilder,
+    mut style: impl FnMut() -> ButtonBundle,
+    children: impl FnMut(&mut ChildBuilder)
+) {
+    parent.spawn(style()).with_children(children);
+}
+
+/// Spawns a [`ButtonBundle`] as a child of the parent specified.
+pub fn button(
+    parent: &mut ChildBuilder,
+    mut style: impl FnMut() -> ButtonBundle
+) {
+    parent.spawn(style());
+}
+
+/// Spawns a [`ButtonBundle`] as a child of the parent specified.
+pub fn text_button<F: FnMut() -> TextStyle + Clone>(
+    parent: &mut ChildBuilder,
+    txt: &str,
+    style: impl FnMut() -> ButtonBundle,
+    font: F
+) {
+    button_with(parent, style, move |p| {
+        let font = font.clone();
+        text(p, txt, || TextBundle::default(), font)
+    });
 }
