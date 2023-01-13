@@ -59,7 +59,7 @@ pub fn root(
     assets: impl AsRef<AssetServer>,
     commands: &mut Commands,
     children: impl FnOnce(&mut UiChildBuilder)
-) {
+) -> Entity {
     commands
         .spawn(class())
         .with_children(|builder| {
@@ -68,15 +68,16 @@ pub fn root(
                 assets: assets.as_ref()
             };
             children(&mut builder);
-        });
+        })
+        .id()
 }
 
 /// Spawns a [`NodeBundle`] without children.
 pub fn rect(
     parent: &mut UiChildBuilder,
     class: impl FnOnce() -> NodeBundle
-) {
-    parent.spawn(class());
+) -> Entity {
+    parent.spawn(class()).id()
 }
 
 /// Spawns a [`NodeBundle`] with children.
@@ -84,8 +85,8 @@ pub fn node(
     class: impl FnOnce() -> NodeBundle,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
-) {
-    parent.spawn(class()).with_children(children);
+) -> Entity {
+    parent.spawn(class()).with_children(children).id()
 }
 
 /// Spawns a [`TextBundle`].
@@ -94,14 +95,14 @@ pub fn text(
     class: impl FnOnce() -> TextBundle,
     text_style: impl FnOnce(&AssetServer) -> TextStyle,
     parent: &mut UiChildBuilder
-) {
+) -> Entity {
     let mut bundle = class();
     let sections = &mut bundle.text.sections;
     sections.push(TextSection {
         value: text.to_string(),
         style: text_style(parent.assets),
     });
-    parent.spawn(bundle);
+    parent.spawn(bundle).id()
 }
 
 /// Spawns a [`ButtonBundle`] with children.
@@ -109,18 +110,19 @@ pub fn button(
     parent: &mut UiChildBuilder,
     class: impl FnOnce(&AssetServer) -> ButtonBundle,
     children: impl FnOnce(&mut UiChildBuilder)
-) {
+) -> Entity {
     parent
         .spawn(class(parent.assets))
-        .with_children(children);
+        .with_children(children)
+        .id()
 }
 
 /// Spawns a [`ButtonBundle`] without children.
 pub fn simple_button(
     parent: &mut UiChildBuilder,
     class: impl FnOnce() -> ButtonBundle
-) {
-    parent.spawn(class());
+) -> Entity {
+    parent.spawn(class()).id()
 }
 
 /// Spawns a [`ButtonBundle`] with a single [`TextBundle`] as its child.
@@ -129,11 +131,11 @@ pub fn text_button(
     class: impl FnOnce(&AssetServer) -> ButtonBundle,
     text_style: impl FnOnce(&AssetServer) -> TextStyle,
     parent: &mut UiChildBuilder
-) {
+) -> Entity {
     button(parent, class, |p| {
         let text_bundle = || TextBundle::default();
         text(txt, text_bundle, text_style, p);
-    });
+    })
 }
 
 /// Spawns an [`ImageBundle`] with children.
@@ -141,16 +143,18 @@ pub fn image(
     class: impl FnOnce() -> ImageBundle,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
-) {
-    parent.spawn(class()).with_children(children);
+) -> Entity {
+    parent
+        .spawn(class())
+        .with_children(children).id()
 }
 
 /// Spawns an [`ImageBundle`] without children.
 pub fn simple_image(
     class: impl FnOnce(&AssetServer) -> ImageBundle,
     parent: &mut UiChildBuilder
-) {
-    parent.spawn(class(parent.assets));
+) -> Entity {
+    parent.spawn(class(parent.assets)).id()
 }
 
 /// Spawns a [`NodeBundle`] which children [`NodeBundle`]s acting as the cells of a grid.
@@ -161,7 +165,7 @@ pub fn grid(
     class: impl FnOnce() -> NodeBundle,
     parent: &mut UiChildBuilder,
     mut children: impl FnMut(&mut UiChildBuilder, usize, usize)
-) {
+) -> Entity {
     // Spawns container
     let mut container_bundle = class();
     container_bundle.style.flex_wrap = FlexWrap::Wrap;
@@ -182,4 +186,5 @@ pub fn grid(
             });
         }
     }
+    container.id()
 }

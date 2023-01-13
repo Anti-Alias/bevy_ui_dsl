@@ -24,7 +24,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
             text("Do you like it?", c_text, t_pixel, p);
             text_button("Hiya", c_button_left, t_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
             grid(6, 6, c_grid, p, |p, _row, _col| {                 // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
-                simple_image(c_inv_slot, p)
+                simple_image(c_inv_slot, p);
             });
             text("Le grid", c_text, t_pixel, p);
         });
