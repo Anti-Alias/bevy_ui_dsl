@@ -18,15 +18,15 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
     // Builds DOM
     let c = &mut commands;
-    root(c_root, assets, c, |p| {                                   // Spawns a root NodeBundle. AssetServer gets propagated.
-        node(c_left, p, |p| {                                       // Spawns the left pane as a NodeBundle
-            text("This is the left pane!", c_text, t_pixel, p);     // Spawns a TextBundle
-            text("Do you like it?", c_text, t_pixel, p);            // Spawns a TextBundle
+    root(c_root, assets, c, |p| {                                   // Spawns the root NodeBundle. AssetServer gets propagated.
+        node(c_left, p, |p| {                                       // Spawns the left pane as a NodeBundle.
+            text("This is the left pane!", c_text, t_pixel, p);     // Spawns a TextBundle.
+            text("Do you like it?", c_text, t_pixel, p);
             text_button("Hiya", c_button_left, t_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
-            grid(6, 6, c_grid, p, |p, _row, _col| {                 // Spawns a NodeBundle container with a NodeBundle for each cell (6x6). Each cell contains a single ImageBundle.
+            grid(6, 6, c_grid, p, |p, _row, _col| {                 // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
                 simple_image(c_inv_slot, p)
             });
-            text("Le grid", c_text, t_pixel, p);            // Spawns a TextBundle
+            text("Le grid", c_text, t_pixel, p);
         });
         node(c_right, p, |p| {
             text("This is the right pane!", c_text, t_pixel, p);
