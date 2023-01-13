@@ -1,80 +1,185 @@
+use bevy_asset::AssetServer;
 use bevy_text::{TextStyle, TextSection};
-use bevy_ecs::system::Commands;
-use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle};
+use bevy_ecs::entity::Entity;
+use bevy_ecs::system::{Commands, EntityCommands};
+use bevy_ecs::bundle::Bundle;
+use bevy_ui::{Size, Val, FlexWrap};
+use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::{ChildBuilder, BuildChildren};
 
 
-/// Spawns a [`NodeBundle`] as the root.
-/// Also specifies children in the form of a callback.
-pub fn node_root(
+/// Wrapper for [`ChildBuilder`] that also propogates an [`AssetServer`] for the children that need it.
+// It has enough ' for a lifetime ;)
+pub struct UiChildBuilder<'a, 'b, 'c, 'd> {
+    builder: &'a mut ChildBuilder<'b, 'c, 'd>,
+    assets: &'a AssetServer
+}
+
+impl<'a, 'b, 'c, 'd> UiChildBuilder<'a, 'b, 'c, 'd> {
+    pub fn spawn(&mut self, bundle: impl Bundle) -> UiEntityCommands<'a, 'b, 'c, '_> {
+        let commands: EntityCommands<'b, 'c, '_> = self.builder.spawn(bundle);
+        UiEntityCommands {
+            assets: self.assets,
+            commands
+        }
+    }
+    pub fn assets(&self) -> &AssetServer { self.assets }
+}
+
+/// Wrapper for [`EntityCommands`] that also propagates an [`AssetServer`] for the children that need it.
+pub struct UiEntityCommands<'a, 'b, 'c, 'd> {
+    commands: EntityCommands<'b, 'c, 'd>,
+    assets: &'a AssetServer
+}
+
+impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
+    pub fn id(&self) -> Entity {
+        self.commands.id()
+    }
+    pub fn insert(&mut self, bundle: impl Bundle) -> &mut Self {
+        self.commands.insert(bundle);
+        self
+    }
+    fn with_children(&mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> &mut Self {
+        self.commands.with_children(|builder| {
+            let mut ui_builder = UiChildBuilder {
+                assets: self.assets,
+                builder
+            };
+            spawn_children(&mut ui_builder);
+        });
+        self
+    }
+
+}
+
+/// Spawns a [`NodeBundle`] as the root with children.
+pub fn root(
+    class: impl FnOnce() -> NodeBundle,
+    assets: impl AsRef<AssetServer>,
     commands: &mut Commands,
-    mut style: impl FnMut() -> NodeBundle,
-    children: impl FnMut(&mut ChildBuilder)
+    children: impl FnOnce(&mut UiChildBuilder)
 ) {
-    commands.spawn(style()).with_children(children);
+    commands
+        .spawn(class())
+        .with_children(|builder| {
+            let mut builder = UiChildBuilder {
+                builder,
+                assets: assets.as_ref()
+            };
+            children(&mut builder);
+        });
 }
 
-/// Spawns a [`NodeBundle`] as a child of the parent specified.
+/// Spawns a [`NodeBundle`] without children.
+pub fn rect(
+    parent: &mut UiChildBuilder,
+    class: impl FnOnce() -> NodeBundle
+) {
+    parent.spawn(class());
+}
+
+/// Spawns a [`NodeBundle`] with children.
 pub fn node(
-    parent: &mut ChildBuilder,
-    mut style: impl FnMut() -> NodeBundle
+    class: impl FnOnce() -> NodeBundle,
+    parent: &mut UiChildBuilder,
+    children: impl FnOnce(&mut UiChildBuilder)
 ) {
-    parent.spawn(style());
+    parent.spawn(class()).with_children(children);
 }
 
-/// Spawns a [`NodeBundle`] as a child of the parent specified.
-/// Also specifies children in the form of a callback.
-pub fn node_with(
-    parent: &mut ChildBuilder,
-    mut style: impl FnMut() -> NodeBundle,
-    children: impl FnMut(&mut ChildBuilder)
-) {
-    parent.spawn(style()).with_children(children);
-}
-
-/// Spawns a [`TextBundle`] as a child of the parent specified.
+/// Spawns a [`TextBundle`].
 pub fn text(
-    parent: &mut ChildBuilder,
     text: &str,
-    mut style: impl FnMut() -> TextBundle,
-    mut font: impl FnMut() -> TextStyle
+    class: impl FnOnce() -> TextBundle,
+    text_style: impl FnOnce(&AssetServer) -> TextStyle,
+    parent: &mut UiChildBuilder
 ) {
-    let mut bundle = style();
+    let mut bundle = class();
     let sections = &mut bundle.text.sections;
     sections.push(TextSection {
         value: text.to_string(),
-        style: font(),
+        style: text_style(parent.assets),
     });
     parent.spawn(bundle);
 }
 
-/// Spawns a [`ButtonBundle`] as a child of the parent specified.
-/// Also specifies children in the form of a callback.
-pub fn button_with(
-    parent: &mut ChildBuilder,
-    mut style: impl FnMut() -> ButtonBundle,
-    children: impl FnMut(&mut ChildBuilder)
-) {
-    parent.spawn(style()).with_children(children);
-}
-
-/// Spawns a [`ButtonBundle`] as a child of the parent specified.
+/// Spawns a [`ButtonBundle`] with children.
 pub fn button(
-    parent: &mut ChildBuilder,
-    mut style: impl FnMut() -> ButtonBundle
+    parent: &mut UiChildBuilder,
+    class: impl FnOnce(&AssetServer) -> ButtonBundle,
+    children: impl FnOnce(&mut UiChildBuilder)
 ) {
-    parent.spawn(style());
+    parent
+        .spawn(class(parent.assets))
+        .with_children(children);
 }
 
-/// Spawns a [`ButtonBundle`] as a child of the parent specified.
-pub fn text_button<F: FnMut() -> TextStyle + Clone>(
-    parent: &mut ChildBuilder,
-    txt: &str,
-    style: impl FnMut() -> ButtonBundle,
-    font: F
+/// Spawns a [`ButtonBundle`] without children.
+pub fn simple_button(
+    parent: &mut UiChildBuilder,
+    class: impl FnOnce() -> ButtonBundle
 ) {
-    button_with(parent, style, move |p| {
-        let font = font.clone();
-        text(p, txt, || TextBundle::default(), font)
+    parent.spawn(class());
+}
+
+/// Spawns a [`ButtonBundle`] with a single [`TextBundle`] as its child.
+pub fn text_button(
+    txt: &str,
+    class: impl FnOnce(&AssetServer) -> ButtonBundle,
+    text_style: impl FnOnce(&AssetServer) -> TextStyle,
+    parent: &mut UiChildBuilder
+) {
+    button(parent, class, |p| {
+        let text_bundle = || TextBundle::default();
+        text(txt, text_bundle, text_style, p);
     });
+}
+
+/// Spawns an [`ImageBundle`] with children.
+pub fn image(
+    class: impl FnOnce() -> ImageBundle,
+    parent: &mut UiChildBuilder,
+    children: impl FnOnce(&mut UiChildBuilder)
+) {
+    parent.spawn(class()).with_children(children);
+}
+
+/// Spawns an [`ImageBundle`] without children.
+pub fn simple_image(
+    class: impl FnOnce(&AssetServer) -> ImageBundle,
+    parent: &mut UiChildBuilder
+) {
+    parent.spawn(class(parent.assets));
+}
+
+/// Spawns a [`NodeBundle`] which children [`NodeBundle`]s acting as the cells of a grid.
+/// The callback allows for spawing children in those cells.
+pub fn grid(
+    rows: usize,
+    columns: usize,
+    class: impl FnOnce() -> NodeBundle,
+    parent: &mut UiChildBuilder,
+    mut children: impl FnMut(&mut UiChildBuilder, usize, usize)
+) {
+    // Spawns container
+    let mut container_bundle = class();
+    container_bundle.style.flex_wrap = FlexWrap::Wrap;
+    let mut container = parent.spawn(container_bundle);
+
+    // Spawns cells as children of the container
+    let mut cell_bundle = NodeBundle::default();
+    cell_bundle.style.size = Size::new(
+        Val::Percent(100.0 / rows as f32),
+        Val::Percent(100.0 / columns as f32)
+    );
+    for row in 0..rows {
+        for col in 0..columns {
+            container.with_children(|container| {
+                container
+                    .spawn(cell_bundle.clone())
+                    .with_children(|cell| children(cell, row, col));
+            });
+        }
+    }
 }
