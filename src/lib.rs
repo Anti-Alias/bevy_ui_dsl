@@ -140,12 +140,12 @@ pub fn text_button(
 
 /// Spawns an [`ImageBundle`] with children.
 pub fn image(
-    class: impl FnOnce() -> ImageBundle,
+    class: impl FnOnce(&AssetServer) -> ImageBundle,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
     parent
-        .spawn(class())
+        .spawn(class(parent.assets))
         .with_children(children).id()
 }
 
