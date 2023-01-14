@@ -5,11 +5,10 @@ A "domain specific language" designed to make building UIs in Bevy more pleasant
 ## Example
 
 ```rust
-fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
+fn startup(mut commands: Commands, assets: Res<AssetServer>) {
 
     // Obligatory camera
     commands.spawn(Camera2dBundle::default());
-    scale.scale = 2.0;
 
     // Builds DOM
     root(c_root, &assets, &mut commands, |p| {                      // Spawns the root NodeBundle. AssetServer gets propagated.
