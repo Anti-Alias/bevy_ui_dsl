@@ -119,7 +119,7 @@ fn t_pixel(a: &AssetServer, s: &mut TextStyle) {
 }
 ```
 
-Some classes only depend a single bundle or TextStyle. Others (like ImageBundle, ButtonBundle and TextStyle) depend on an AssetServer to manipulate their respective types.
+Some classes only depend a single bundle. Others (like ImageBundle, ButtonBundle and TextStyle) depend on an AssetServer to manipulate their respective types.
 
 # TODO
 * Allow users to insert extra components to widgets by returning an EntityCommands.
