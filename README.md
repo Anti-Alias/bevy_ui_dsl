@@ -1,15 +1,10 @@
-use bevy::prelude::*;
-use bevy_ui_dsl::*;
+# Bevy UI DSL
 
+A "domain specific language" designed to make building UIs in Bevy more pleasant. This DSL uses the same ingredients that **bevy_ui** uses, so those already familiar with **bevy_ui** should have an easy time learning it.
 
-fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))    // Nearest neighbor scaling for pixel graphics!
-        .add_startup_system(startup)
-        .run();
-}
+## Example
 
-
+```rust
 fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
 
     // Obligatory camera
@@ -35,8 +30,18 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     });
 }
 
+```
 
-// --------------- Classes (they're really just producers of bundles, but it's useful to think of them as .css classes) ---------------
+This system constructs spawns a UI using widgets like **root**, **node**, **text**, **text_button**, etc.
+You can even create your own widgets! They're just functions!
+
+In this example, **root** is a function that takes a class called c_root. The c_root function just manipulates a NodeBundle, which is just NodeBundle::default() by default. Ultimately, the **NodeBundle** in question is what ultimately gets spawned.
+
+Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a **NodeBundle**. When a tuple of classes is supplied, the callback functions are applied right to left.
+
+## Class Examples
+
+```rust
 fn c_root(bundle: &mut NodeBundle) {
     bundle.style = Style {
         size: Size::new(Val::Percent(100.), Val::Percent(100.)),
@@ -108,10 +113,15 @@ fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
     b.image = assets.load("item_slot.png").into();
 }
 
-
-// --------------- Text styles ---------------
 fn t_pixel(a: &AssetServer, s: &mut TextStyle) {
     s.font = a.load("prstartk.ttf").into();
     s.font_size = 8.;
     s.color = Color::WHITE.into();
 }
+```
+
+Some classes only depend on the bundle or TextStyle supplied. Others (like ImageBundle, ButtonBundle and TextStyle) depend on an AssetServer to manipulate their respective types.
+
+# TODO
+* Allow users to insert extra components to widgets by returning an EntityCommands.
+* Create an example with interactive components.
