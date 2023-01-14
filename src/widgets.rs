@@ -5,18 +5,23 @@ use bevy_ecs::system::Commands;
 use bevy_ui::{Size, Val, FlexWrap};
 use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::BuildChildren;
+use crate::AssetClass;
+
+use super::Class;
 use super::UiChildBuilder;
 
 
 /// Spawns a [`NodeBundle`] as the root with children.
-pub fn root<'w, 's>(
-    class: impl FnOnce() -> NodeBundle,
+pub fn root(
+    class: impl Class<NodeBundle>,
     assets: &AssetServer,
     commands: &mut Commands,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
+    let mut bundle = NodeBundle::default();
+    class.apply(&mut bundle);
     commands
-        .spawn(class())
+        .spawn(bundle)
         .with_children(|builder| {
             let mut builder = UiChildBuilder {
                 builder,
@@ -27,69 +32,70 @@ pub fn root<'w, 's>(
         .id()
 }
 
-/// Spawns a [`NodeBundle`] without children.
-pub fn rect(
-    parent: &mut UiChildBuilder,
-    class: impl FnOnce() -> NodeBundle
-) -> Entity {
-    parent.spawn(class()).id()
-}
-
 /// Spawns a [`NodeBundle`] with children.
 pub fn node(
-    class: impl FnOnce() -> NodeBundle,
+    class: impl Class<NodeBundle>,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
-    parent.spawn(class()).with_children(children).id()
+    let mut bundle = NodeBundle::default();
+    class.apply(&mut bundle);
+    parent.spawn(bundle).with_children(children).id()
 }
 
 /// Spawns a [`TextBundle`].
 pub fn text(
     text: &str,
-    class: impl FnOnce() -> TextBundle,
-    text_style: impl FnOnce(&AssetServer) -> TextStyle,
+    class: impl AssetClass<TextBundle>,
+    text_style: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
 ) -> Entity {
-    let mut bundle = class();
+    let mut bundle = TextBundle::default();
+    class.apply(parent.assets, &mut bundle);
     let sections = &mut bundle.text.sections;
+    let mut style = TextStyle::default();
+    text_style.apply(parent.assets, &mut style);
     sections.push(TextSection {
         value: text.to_string(),
-        style: text_style(parent.assets),
+        style,
     });
     parent.spawn(bundle).id()
 }
 
 /// Spawns a [`ButtonBundle`] with children.
 pub fn button(
-    class: impl FnOnce(&AssetServer) -> ButtonBundle,
+    class: impl AssetClass<ButtonBundle>,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
+    let mut bundle = ButtonBundle::default();
+    class.apply(parent.assets, &mut bundle);
     parent
-        .spawn(class(parent.assets))
+        .spawn(bundle)
         .with_children(children)
         .id()
 }
 
 /// Spawns a [`ButtonBundle`] without children.
 pub fn simple_button(
-    parent: &mut UiChildBuilder,
-    class: impl FnOnce() -> ButtonBundle
+    class: impl AssetClass<ButtonBundle>,
+    parent: &mut UiChildBuilder
 ) -> Entity {
-    parent.spawn(class()).id()
+    let mut bundle = ButtonBundle::default();
+    class.apply(parent.assets, &mut bundle);
+    parent.spawn(bundle).id()
 }
 
 /// Spawns a [`ButtonBundle`] with a single [`TextBundle`] as its child.
 pub fn text_button(
     txt: &str,
-    class: impl FnOnce(&AssetServer) -> ButtonBundle,
-    text_style: impl FnOnce(&AssetServer) -> TextStyle,
+    class: impl AssetClass<ButtonBundle>,
+    text_style: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
 ) -> Entity {
+    fn c_text(_a: &AssetServer,_b: &mut TextBundle) {}       // No need to overwrite the default!
     button(class, parent, |p| {
-        let text_bundle = || TextBundle::default();
-        text(txt, text_bundle, text_style, p);
+        text(txt, c_text, text_style, p);
     })
 }
 
@@ -106,10 +112,12 @@ pub fn image(
 
 /// Spawns an [`ImageBundle`] without children.
 pub fn simple_image(
-    class: impl FnOnce(&AssetServer) -> ImageBundle,
+    class: impl AssetClass<ImageBundle>,
     parent: &mut UiChildBuilder
 ) -> Entity {
-    parent.spawn(class(parent.assets)).id()
+    let mut bundle = ImageBundle::default();
+    class.apply(parent.assets, &mut bundle);
+    parent.spawn(bundle).id()
 }
 
 /// Spawns a [`NodeBundle`] which children [`NodeBundle`]s acting as the cells of a grid.
@@ -117,12 +125,13 @@ pub fn simple_image(
 pub fn grid(
     rows: usize,
     columns: usize,
-    class: impl FnOnce() -> NodeBundle,
+    class: impl Class<NodeBundle>,
     parent: &mut UiChildBuilder,
     mut children: impl FnMut(&mut UiChildBuilder, usize, usize)
 ) -> Entity {
     // Spawns container
-    let mut container_bundle = class();
+    let mut container_bundle = NodeBundle::default();
+    class.apply(&mut container_bundle);
     container_bundle.style.flex_wrap = FlexWrap::Wrap;
     let mut container = parent.spawn(container_bundle);
 

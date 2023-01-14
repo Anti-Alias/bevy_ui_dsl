@@ -1,6 +1,8 @@
 mod widgets;
-pub use widgets::*;
 
+use bevy_text::TextStyle;
+pub use widgets::*;
+use bevy_ui::node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle};
 use bevy_asset::AssetServer;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
@@ -50,5 +52,147 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
         });
         self
     }
+}
 
+/// Something that can overwrite a value, typically a node bundle.
+pub trait Class<B> {
+    fn apply(self, b: &mut B);
+}
+
+impl<F, B> Class<B> for F
+where
+    F: FnOnce(&mut B),
+    B: Bundle
+{
+    fn apply(self, b: &mut B) {
+        self(b);
+    }
+}
+
+impl<F1, F2, B> Class<B> for (F1, F2)
+where
+    F1: FnOnce(&mut B),
+    F2: FnOnce(&mut B),
+    B: Bundle
+{
+    fn apply(self, b: &mut B) {
+        self.0(b);
+        self.1(b);
+    }
+}
+
+impl<F1, F2, F3, B> Class<B> for (F1, F2, F3)
+where
+    F1: FnOnce(&mut B),
+    F2: FnOnce(&mut B),
+    F3: FnOnce(&mut B),
+    B: Bundle
+{
+    fn apply(self, b: &mut B) {
+        self.0(b);
+        self.1(b);
+        self.2(b);
+    }
+}
+
+impl<F1, F2, F3, F4, B> Class<B> for (F1, F2, F3, F4)
+where
+    F1: FnOnce(&mut B),
+    F2: FnOnce(&mut B),
+    F3: FnOnce(&mut B),
+    F4: FnOnce(&mut B),
+    B: Bundle
+{
+    fn apply(self, b: &mut B) {
+        self.0(b);
+        self.1(b);
+        self.2(b);
+        self.3(b);
+    }
+}
+
+impl Class<NodeBundle> for NodeBundle {
+    fn apply(self, b: &mut NodeBundle) {
+        *b = self;
+    }
+}
+
+impl Class<ImageBundle> for ImageBundle {
+    fn apply(self, b: &mut ImageBundle) {
+        *b = self;
+    }
+}
+
+
+
+/// Something that can overwrite a value, typically a node bundle.
+/// Depends on an [`AssetServer`], unlike [`Class`].
+pub trait AssetClass<B> {
+    fn apply(self, assets: &AssetServer, b: &mut B);
+}
+
+impl<F, B> AssetClass<B> for F
+where
+    F: FnOnce(&AssetServer, &mut B)
+{
+    fn apply(self, a: &AssetServer, b: &mut B) {
+        self(a, b);
+    }
+}
+
+impl<F1, F2, B> AssetClass<B> for (F1, F2)
+where
+    F1: FnOnce(&AssetServer, &mut B),
+    F2: FnOnce(&AssetServer, &mut B)
+{
+    fn apply(self, a: &AssetServer, b: &mut B) {
+        self.0(a, b);
+        self.1(a, b);
+    }
+}
+
+impl<F1, F2, F3, B> AssetClass<B> for (F1, F2, F3)
+where
+    F1: FnOnce(&AssetServer, &mut B),
+    F2: FnOnce(&AssetServer, &mut B),
+    F3: FnOnce(&AssetServer, &mut B)
+{
+    fn apply(self, a: &AssetServer, b: &mut B) {
+        self.0(a, b);
+        self.1(a, b);
+        self.2(a, b);
+    }
+}
+
+impl<F1, F2, F3, F4, B> AssetClass<B> for (F1, F2, F3, F4)
+where
+    F1: FnOnce(&AssetServer, &mut B),
+    F2: FnOnce(&AssetServer, &mut B),
+    F3: FnOnce(&AssetServer, &mut B),
+    F4: FnOnce(&AssetServer, &mut B)
+{
+    fn apply(self, a: &AssetServer, b: &mut B) {
+        self.0(a, b);
+        self.1(a, b);
+        self.2(a, b);
+        self.3(a, b);
+    }
+}
+
+impl AssetClass<ButtonBundle> for ButtonBundle {
+    fn apply(self, _a: &AssetServer, b: &mut ButtonBundle) {
+        *b = self;
+    }
+}
+
+impl AssetClass<TextBundle> for TextBundle {
+    fn apply(self, _a: &AssetServer, b: &mut TextBundle) {
+        *b = self;
+    }
+}
+
+impl AssetClass<TextStyle> for TextStyle {
+    fn apply(self, _a: &AssetServer, b: &mut TextStyle) {
+        *b = self;
+    }
 }
