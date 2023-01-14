@@ -18,7 +18,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
     // Builds DOM
     root(c_root, &assets, &mut commands, |p| {                      // Spawns the root NodeBundle. AssetServer gets propagated.
-        node(c_left, p, |p| {                                       // Spawns the left pane as a NodeBundle.
+        node((c_half, c_green), p, |p| {                            // Spawns the left pane as a NodeBundle.
             text("This is the left pane!", c_text, t_pixel, p);     // Spawns a TextBundle.
             text("Do you like it?", c_text, t_pixel, p);
             text_button("Hiya", c_button_left, t_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
@@ -27,7 +27,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
             });
             text("Le grid", c_text, t_pixel, p);
         });
-        node(c_right, p, |p| {
+        node((c_half, c_blue), p, |p| {
             text("This is the right pane!", c_text, t_pixel, p);
             text("Indeed, I do!", c_text, t_pixel, p);
             text_button("Howdy", c_button_right, t_pixel, p);
@@ -44,7 +44,7 @@ fn c_root(bundle: &mut NodeBundle) {
     };
 }
 
-fn c_left(b: &mut NodeBundle) {
+fn c_half(b: &mut NodeBundle) {
     b.style = Style {
         size: Size::new(Val::Percent(50.), Val::Percent(100.)),
         flex_direction: FlexDirection::Column,
@@ -53,18 +53,13 @@ fn c_left(b: &mut NodeBundle) {
         padding: UiRect::all(Val::Px(10.)),
         ..default()
     };
+}
+
+fn c_green(b: &mut NodeBundle) {
     b.background_color = Color::rgb_u8(125, 212, 148).into();
 }
 
-fn c_right(b: &mut NodeBundle) {
-    b.style = Style {
-        size: Size::new(Val::Percent(50.), Val::Percent(100.)),
-        flex_direction: FlexDirection::Column,
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        padding: UiRect::all(Val::Px(10.)),
-        ..default()
-    };
+fn c_blue(b: &mut NodeBundle) {
     b.background_color = Color::rgb_u8(125, 164, 212).into();
 }
 
