@@ -107,8 +107,8 @@ pub fn text(
 
 /// Spawns a [`ButtonBundle`] with children.
 pub fn button(
-    parent: &mut UiChildBuilder,
     class: impl FnOnce(&AssetServer) -> ButtonBundle,
+    parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
     parent
@@ -132,7 +132,7 @@ pub fn text_button(
     text_style: impl FnOnce(&AssetServer) -> TextStyle,
     parent: &mut UiChildBuilder
 ) -> Entity {
-    button(parent, class, |p| {
+    button(class, parent, |p| {
         let text_bundle = || TextBundle::default();
         text(txt, text_bundle, text_style, p);
     })
