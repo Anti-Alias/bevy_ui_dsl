@@ -32,12 +32,12 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
 ```
 
-This system constructs spawns a UI using widgets like **root**, **node**, **text**, **text_button**, etc.
+This system spawns a UI using widgets like **root**, **node**, **text**, **text_button**, etc.
 You can even create your own widgets! They're just functions!
 
-In this example, **root** is a function that takes a class called c_root. The c_root function just manipulates a NodeBundle, which is just NodeBundle::default() by default. Ultimately, the **NodeBundle** in question is what ultimately gets spawned.
+In this example, **root** is a function that takes a class called **c_root**. The **c_root** function just manipulates a NodeBundle, which is NodeBundle::default() by default. Ultimately, the NodeBundle in question gets spawned.
 
-Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a **NodeBundle**. When a tuple of classes is supplied, the callback functions are applied right to left.
+Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a NodeBundle. When a tuple of classes is supplied, the callback functions are applied left to right.
 
 ## Class Examples
 
@@ -120,7 +120,7 @@ fn t_pixel(a: &AssetServer, s: &mut TextStyle) {
 }
 ```
 
-Some classes only depend on the bundle or TextStyle supplied. Others (like ImageBundle, ButtonBundle and TextStyle) depend on an AssetServer to manipulate their respective types.
+Some classes only depend a single bundle or TextStyle. Others (like ImageBundle, ButtonBundle and TextStyle) depend on an AssetServer to manipulate their respective types.
 
 # TODO
 * Allow users to insert extra components to widgets by returning an EntityCommands.
