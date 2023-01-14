@@ -17,8 +17,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     scale.scale = 2.0;
 
     // Builds DOM
-    let c = &mut commands;
-    root(c_root, assets, c, |p| {                                   // Spawns the root NodeBundle. AssetServer gets propagated.
+    root(c_root, &assets, &mut commands, |p| {                      // Spawns the root NodeBundle. AssetServer gets propagated.
         node(c_left, p, |p| {                                       // Spawns the left pane as a NodeBundle.
             text("This is the left pane!", c_text, t_pixel, p);     // Spawns a TextBundle.
             text("Do you like it?", c_text, t_pixel, p);

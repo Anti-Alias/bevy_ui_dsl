@@ -40,7 +40,7 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
         self.commands.insert(bundle);
         self
     }
-    fn with_children(&mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> &mut Self {
+    fn with_children(mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> Self {
         self.commands.with_children(|builder| {
             let mut ui_builder = UiChildBuilder {
                 assets: self.assets,
@@ -54,9 +54,9 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
 }
 
 /// Spawns a [`NodeBundle`] as the root with children.
-pub fn root(
+pub fn root<'w, 's>(
     class: impl FnOnce() -> NodeBundle,
-    assets: impl AsRef<AssetServer>,
+    assets: &AssetServer,
     commands: &mut Commands,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
@@ -65,7 +65,7 @@ pub fn root(
         .with_children(|builder| {
             let mut builder = UiChildBuilder {
                 builder,
-                assets: assets.as_ref()
+                assets
             };
             children(&mut builder);
         })
@@ -179,7 +179,7 @@ pub fn grid(
     );
     for row in 0..rows {
         for col in 0..columns {
-            container.with_children(|container| {
+            container = container.with_children(|container| {
                 container
                     .spawn(cell_bundle.clone())
                     .with_children(|cell| children(cell, row, col));
