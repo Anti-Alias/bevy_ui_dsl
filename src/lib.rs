@@ -62,7 +62,6 @@ pub trait Class<B> {
 impl<F, B> Class<B> for F
 where
     F: FnOnce(&mut B),
-    B: Bundle
 {
     fn apply(self, b: &mut B) {
         self(b);
@@ -72,8 +71,7 @@ where
 impl<F1, F2, B> Class<B> for (F1, F2)
 where
     F1: FnOnce(&mut B),
-    F2: FnOnce(&mut B),
-    B: Bundle
+    F2: FnOnce(&mut B)
 {
     fn apply(self, b: &mut B) {
         self.0(b);
@@ -85,8 +83,7 @@ impl<F1, F2, F3, B> Class<B> for (F1, F2, F3)
 where
     F1: FnOnce(&mut B),
     F2: FnOnce(&mut B),
-    F3: FnOnce(&mut B),
-    B: Bundle
+    F3: FnOnce(&mut B)
 {
     fn apply(self, b: &mut B) {
         self.0(b);
@@ -100,8 +97,7 @@ where
     F1: FnOnce(&mut B),
     F2: FnOnce(&mut B),
     F3: FnOnce(&mut B),
-    F4: FnOnce(&mut B),
-    B: Bundle
+    F4: FnOnce(&mut B)
 {
     fn apply(self, b: &mut B) {
         self.0(b);

@@ -54,8 +54,7 @@ Like **root**, **node** also takes in a class (or a tuple of classes) and spawns
 
 ```rust
 fn c_root(bundle: &mut NodeBundle) {
-    bundle.style = Style {
-        size: Size::new(Val::Percent(100.), Val::Percent(100.)),
+    bundle.style.size = Size::new(Val::Percent(100.), Val::Percent(100.)),
         ..default()
     };
 }
