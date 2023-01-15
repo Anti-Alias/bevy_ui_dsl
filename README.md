@@ -134,5 +134,4 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
 
 # TODO
-* Allow users to insert extra components to widgets by returning an EntityCommands.
 * Create an example with interactive components.
