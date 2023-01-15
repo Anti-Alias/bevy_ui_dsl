@@ -52,7 +52,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 }
 
 
-// --------------- Classes (they're really just producers of bundles, but it's useful to think of them as .css classes) ---------------
+// --------------- Classes (they're really just callback functions that modify bundles / text styles, but it's useful to think of them as .css classes) ---------------
 fn c_root(bundle: &mut NodeBundle) {
     bundle.style = Style {
         size: Size::new(Val::Percent(100.), Val::Percent(100.)),
