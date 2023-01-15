@@ -196,3 +196,15 @@ impl AssetClass<TextStyle> for TextStyle {
         *b = self;
     }
 }
+
+/// Adds a helper method to [`Entity`] that allows it to be sent to an [`Option`][`Entity`]
+/// ergonomically.
+pub trait EntityWriter {
+    fn set(self, entity: &mut Option<Entity>);
+}
+
+impl EntityWriter for Entity {
+    fn set(self, entity: &mut Option<Entity>) {
+        *entity = Some(self);
+    }
+}
