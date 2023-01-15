@@ -13,18 +13,18 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>) {
     // Builds DOM
     root(c_root, &assets, &mut commands, |p| {                      // Spawns the root NodeBundle. AssetServer gets propagated.
         node((c_half, c_green), p, |p| {                            // Spawns the left pane as a NodeBundle.
-            text("This is the left pane!", c_text, t_pixel, p);     // Spawns a TextBundle.
-            text("Do you like it?", c_text, t_pixel, p);
-            text_button("Hiya", c_button_left, t_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
+            text("This is the left pane!", c_text, c_pixel, p);     // Spawns a TextBundle.
+            text("Do you like it?", c_text, c_pixel, p);
+            text_button("Hiya", c_button_left, c_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
             grid(6, 6, c_grid, p, |p, _row, _col| {                 // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
                 simple_image(c_inv_slot, p);
             });
-            text("Le grid", c_text, t_pixel, p);
+            text("Le grid", c_text, c_pixel, p);
         });
         node((c_half, c_blue), p, |p| {
-            text("This is the right pane!", c_text, t_pixel, p);
-            text("Indeed, I do!", c_text, t_pixel, p);
-            text_button("Howdy", c_button_right, t_pixel, p);
+            text("This is the right pane!", c_text, c_pixel, p);
+            text("Indeed, I do!", c_text, c_pixel, p);
+            text_button("Howdy", c_button_right, c_pixel, p);
         });
     });
 }
@@ -112,7 +112,7 @@ fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
     b.image = assets.load("item_slot.png").into();
 }
 
-fn t_pixel(a: &AssetServer, s: &mut TextStyle) {
+fn c_pixel(a: &AssetServer, s: &mut TextStyle) {
     s.font = a.load("prstartk.ttf").into();
     s.font_size = 8.;
     s.color = Color::WHITE.into();

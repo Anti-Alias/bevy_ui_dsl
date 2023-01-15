@@ -47,14 +47,14 @@ pub fn node(
 pub fn text(
     text: &str,
     class: impl AssetClass<TextBundle>,
-    text_style: impl AssetClass<TextStyle>,
+    text_class: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
 ) -> Entity {
     let mut bundle = TextBundle::default();
     class.apply(parent.assets, &mut bundle);
     let sections = &mut bundle.text.sections;
     let mut style = TextStyle::default();
-    text_style.apply(parent.assets, &mut style);
+    text_class.apply(parent.assets, &mut style);
     sections.push(TextSection {
         value: text.to_string(),
         style,
@@ -99,8 +99,18 @@ pub fn text_button(
     })
 }
 
-/// Spawns an [`ImageBundle`] with children.
+/// Spawns an [`ImageBundle`].
 pub fn image(
+    class: impl AssetClass<ImageBundle>,
+    parent: &mut UiChildBuilder
+) -> Entity {
+    let mut bundle = ImageBundle::default();
+    class.apply(parent.assets, &mut bundle);
+    parent.spawn(bundle).id()
+}
+
+/// Spawns an [`ImageBundle`] with children.
+pub fn image_pane(
     class: impl AssetClass<ImageBundle>,
     parent: &mut UiChildBuilder,
     children: impl FnOnce(&mut UiChildBuilder)
@@ -110,16 +120,6 @@ pub fn image(
     parent
         .spawn(bundle)
         .with_children(children).id()
-}
-
-/// Spawns an [`ImageBundle`] without children.
-pub fn simple_image(
-    class: impl AssetClass<ImageBundle>,
-    parent: &mut UiChildBuilder
-) -> Entity {
-    let mut bundle = ImageBundle::default();
-    class.apply(parent.assets, &mut bundle);
-    parent.spawn(bundle).id()
 }
 
 /// Spawns a [`NodeBundle`] which children [`NodeBundle`]s acting as the cells of a grid.
