@@ -53,8 +53,9 @@ Like **root**, **node** also takes in a class (or a tuple of classes) and spawns
 ## Class Examples
 
 ```rust
-fn c_root(bundle: &mut NodeBundle) {
-    bundle.style.size = Size::new(Val::Percent(100.), Val::Percent(100.)),
+fn c_root(b: &mut NodeBundle) {
+    b.style = Style {
+        size: Size::new(Val::Percent(100.), Val::Percent(100.)),
         ..default()
     };
 }
@@ -133,5 +134,4 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
 
 # TODO
-* Allow users to insert extra components to widgets by returning an EntityCommands.
 * Create an example with interactive components.
