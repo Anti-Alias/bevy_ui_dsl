@@ -5,28 +5,40 @@ A "domain specific language" designed to make building UIs in Bevy more pleasant
 ## Example
 
 ```rust
-fn startup(mut commands: Commands, assets: Res<AssetServer>) {
+fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
 
     // Obligatory camera
     commands.spawn(Camera2dBundle::default());
+    scale.scale = 2.0;
 
-    // Builds DOM
-    root(c_root, &assets, &mut commands, |p| {                      // Spawns the root NodeBundle. AssetServer gets propagated.
-        node((c_half, c_green), p, |p| {                            // Spawns the left pane as a NodeBundle.
-            text("This is the left pane!", c_text, c_pixel, p);     // Spawns a TextBundle.
+    // Spawns ui and gathers entity ids
+    let mut hiya = None;
+    let mut howdy = None;
+    root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer gets propagated.
+        node((c_half, c_green), p, |p| {                                        // Spawns the left pane as a NodeBundle.
+            text("This is the left pane!", c_text, c_pixel, p);                 // Spawns a TextBundle.
             text("Do you like it?", c_text, c_pixel, p);
-            text_button("Hiya", c_button_left, c_pixel, p);         // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
-            grid(6, 6, c_grid, p, |p, _row, _col| {                 // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
-                simple_image(c_inv_slot, p);
+            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);      // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
+            grid(6, 6, c_grid, p, |p, _row, _col| {                             // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
+                image(c_inv_slot, p);
             });
             text("Le grid", c_text, c_pixel, p);
         });
         node((c_half, c_blue), p, |p| {
             text("This is the right pane!", c_text, c_pixel, p);
             text("Indeed, I do!", c_text, c_pixel, p);
-            text_button("Howdy", c_button_right, c_pixel, p);
+            text_button("Howdy", c_button_right, c_pixel, p).set(&mut howdy);
         });
     });
+
+    // Inserts marker components into the gathered entities.
+    // Useful when you need to interact with specific entities in the UI
+    commands
+        .entity(hiya.unwrap())
+        .insert(UiId::HiyaButton);
+    commands
+        .entity(howdy.unwrap())
+        .insert(UiId::HowdyButton);
 }
 
 ```
@@ -112,8 +124,8 @@ fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
     b.image = assets.load("item_slot.png").into();
 }
 
-fn c_pixel(a: &AssetServer, s: &mut TextStyle) {
-    s.font = a.load("prstartk.ttf").into();
+fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
+    s.font = assets.load("prstartk.ttf").into();
     s.font_size = 8.;
     s.color = Color::WHITE.into();
 }
