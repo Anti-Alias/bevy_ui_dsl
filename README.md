@@ -53,8 +53,8 @@ Like **root**, **node** also takes in a class (or a tuple of classes) and spawns
 ## Class Examples
 
 ```rust
-fn c_root(bundle: &mut NodeBundle) {
-    bundle.style = Style {
+fn c_root(b: &mut NodeBundle) {
+    b.style = Style {
         size: Size::new(Val::Percent(100.), Val::Percent(100.)),
         ..default()
     };
