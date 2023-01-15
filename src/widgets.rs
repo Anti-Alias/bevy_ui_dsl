@@ -151,8 +151,8 @@ pub fn grid(
         ..Default::default()
     };
     cell_bundle.style.size = Size::new(
-        Val::Percent(100.0 / rows as f32),
-        Val::Percent(100.0 / columns as f32)
+        Val::Percent(100.0 / columns as f32),
+        Val::Percent(100.0 / rows as f32)
     );
     for row in 0..rows {
         for col in 0..columns {
