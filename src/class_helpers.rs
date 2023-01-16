@@ -45,11 +45,11 @@ pub fn px(num: impl Tof32) -> Val {
     Val::Px(num.to_f32())
 }
 
-pub fn rgb_8(r: u8, g: u8, b: u8) -> Color {
+pub fn rgb8(r: u8, g: u8, b: u8) -> Color {
     Color::rgb_u8(r, g, b)
 }
 
-pub fn rgba_8(r: u8, g: u8, b: u8, a: u8) -> Color {
+pub fn rgba8(r: u8, g: u8, b: u8, a: u8) -> Color {
     Color::rgba_u8(r, g, b, a)
 }
 
