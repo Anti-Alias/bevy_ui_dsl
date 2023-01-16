@@ -2,7 +2,7 @@
 
 A "domain specific language" designed to make building UIs in Bevy more pleasant. This DSL uses the same ingredients that **bevy_ui** uses, so those already familiar with **bevy_ui** should have an easy time learning it.
 
-## Example
+## UI Example
 
 ```rust
 fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
@@ -116,5 +116,18 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
 It is recommended that you only set the fields you wish to overwrite in your classes. Be careful, for instance, of using ```..default()``` as this will overwrite even the fields you don't specify.
 
-# TODO
-* Create an example with interactive components.
+
+## Widget Example
+```rust
+/// Spawns a [`NodeBundle`] with children.
+pub fn node(
+    class: impl Class<NodeBundle>,              // Class (or classes) that manipulate the bundle.
+    parent: &mut UiChildBuilder,                // Parent entity to add NodeBundle to.
+    children: impl FnOnce(&mut UiChildBuilder)  // Callback function that spawns children of the newly spawned NodeBundle.
+) -> Entity {
+    let mut bundle = NodeBundle::default();             // Initializes the NodeBundle.
+    class.apply(&mut bundle);                           // Applies class (or classes) to that bundle.
+    parent.spawn(bundle).with_children(children).id()   // Spawns updated bundle with children!
+}
+
+```
