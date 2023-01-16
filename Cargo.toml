@@ -13,3 +13,6 @@ bevy_render = "0.9"
 
 [dev-dependencies]
 bevy = "0.9"
+
+[features]
+class_helpers = []
