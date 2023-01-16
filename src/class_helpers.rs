@@ -1,4 +1,5 @@
 use bevy_ui::{Val, Size, UiRect};
+use bevy_render::color::Color;
 
 pub fn size(width: Val, height: Val) -> Size {
     Size::new(width, height)
@@ -42,6 +43,22 @@ pub fn pc(num: impl Tof32) -> Val {
 
 pub fn px(num: impl Tof32) -> Val {
     Val::Px(num.to_f32())
+}
+
+pub fn rgb_8(r: u8, g: u8, b: u8) -> Color {
+    Color::rgb_u8(r, g, b)
+}
+
+pub fn rgba_8(r: u8, g: u8, b: u8, a: u8) -> Color {
+    Color::rgba_u8(r, g, b, a)
+}
+
+pub fn rgb(r: f32, g: f32, b: f32) -> Color {
+    Color::rgb(r, g, b)
+}
+
+pub fn rgba(r: f32, g: f32, b: f32, a: f32) -> Color {
+    Color::rgba(r, g, b, a)
 }
 
 pub const fn auto() -> Val {
