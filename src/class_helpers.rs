@@ -1,5 +1,56 @@
-use bevy_ui::{Val, Size, UiRect, BackgroundColor};
+use bevy_ui::{Val, Size, UiRect, BackgroundColor, Display, PositionType, AlignItems, AlignSelf, AlignContent, Direction, FlexDirection, JustifyContent, Overflow, FlexWrap};
 use bevy_render::color::Color;
+
+pub const ALIGN_FLEX_START: AlignItems = AlignItems::FlexStart;
+pub const ALIGN_FLEX_END: AlignItems = AlignItems::FlexEnd;
+pub const ALIGN_CENTER: AlignItems = AlignItems::Center;
+pub const ALIGN_BASELINE: AlignItems = AlignItems::Baseline;
+pub const ALIGN_STRETCH: AlignItems = AlignItems::Stretch;
+
+pub const ALIGN_SELF_AUTO: AlignSelf = AlignSelf::FlexStart;
+pub const ALIGN_SELF_FLEX_START: AlignSelf = AlignSelf::FlexEnd;
+pub const ALIGN_SELF_FLEX_END: AlignSelf = AlignSelf::FlexEnd;
+pub const ALIGN_SELF_CENTER: AlignSelf = AlignSelf::Center;
+pub const ALIGN_SELF_BASELINE: AlignSelf = AlignSelf::Baseline;
+pub const ALIGN_SELF_STRETCH: AlignSelf = AlignSelf::Stretch;
+
+pub const ALIGN_CONTENT_AUTO: AlignContent = AlignContent::FlexStart;
+pub const ALIGN_CONTENT_FLEX_START: AlignContent = AlignContent::FlexEnd;
+pub const ALIGN_CONTENT_FLEX_END: AlignContent = AlignContent::FlexEnd;
+pub const ALIGN_CONTENT_CENTER: AlignContent = AlignContent::Center;
+pub const ALIGN_CONTENT_STRETCH: AlignContent = AlignContent::Stretch;
+pub const ALIGN_CONTENT_SPACE_BETWEEN: AlignContent = AlignContent::SpaceBetween;
+pub const ALIGN_CONTENT_SPACE_AROUND: AlignContent = AlignContent::SpaceAround;
+
+pub const INHERIT: Direction = Direction::Inherit;
+pub const LEFT_TO_RIGHT: Direction = Direction::LeftToRight;
+pub const RIGHT_TO_LEFT: Direction = Direction::RightToLeft;
+
+pub const FLEX: Display = Display::Flex;
+pub const NONE: Display = Display::None;
+
+pub const ROW: FlexDirection = FlexDirection::Row;
+pub const COLUMNS: FlexDirection = FlexDirection::Column;
+pub const ROW_REVERSE: FlexDirection = FlexDirection::RowReverse;
+pub const COLUMN_REVERSE: FlexDirection = FlexDirection::ColumnReverse;
+
+pub const JUSTIFY_FLEX_START: JustifyContent = JustifyContent::FlexStart;
+pub const JUSTIFY_FLEX_END: JustifyContent = JustifyContent::FlexEnd;
+pub const JUSTIFY_CENTER: JustifyContent = JustifyContent::Center;
+pub const JUSTIFY_SPACE_BETWEEN: JustifyContent = JustifyContent::SpaceBetween;
+pub const JUSTIFY_SPACE_AROUND: JustifyContent = JustifyContent::SpaceAround;
+pub const JUSTIFY_SPACE_EVENLY: JustifyContent = JustifyContent::SpaceEvenly;
+
+pub const VISIBLE: Overflow = Overflow::Visible;
+pub const HIDDEN: Overflow = Overflow::Hidden;
+
+pub const RELATIVE: PositionType = PositionType::Relative;
+pub const ABSOLUTE: PositionType = PositionType::Absolute;
+
+pub const NO_WRAP: FlexWrap = FlexWrap::NoWrap;
+pub const WRAP: FlexWrap = FlexWrap::Wrap;
+
+
 
 pub fn size(width: Val, height: Val) -> Size {
     Size::new(width, height)
