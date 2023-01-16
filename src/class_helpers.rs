@@ -45,21 +45,38 @@ pub fn px(num: impl Tof32) -> Val {
     Val::Px(num.to_f32())
 }
 
-pub fn rgb8(r: u8, g: u8, b: u8) -> BackgroundColor {
+pub fn rgb8(r: u8, g: u8, b: u8) -> Color {
+    Color::rgb_u8(r, g, b)
+}
+
+pub fn rgba8(r: u8, g: u8, b: u8, a: u8) -> Color {
+    Color::rgba_u8(r, g, b, a)
+}
+
+pub fn rgb(r: f32, g: f32, b: f32) -> Color {
+    Color::rgb(r, g, b)
+}
+
+pub fn rgba(r: f32, g: f32, b: f32, a: f32) -> Color {
+    Color::rgba(r, g, b, a)
+}
+
+pub fn brgb8(r: u8, g: u8, b: u8) -> BackgroundColor {
     Color::rgb_u8(r, g, b).into()
 }
 
-pub fn rgba8(r: u8, g: u8, b: u8, a: u8) -> BackgroundColor {
+pub fn brgba8(r: u8, g: u8, b: u8, a: u8) -> BackgroundColor {
     Color::rgba_u8(r, g, b, a).into()
 }
 
-pub fn rgb(r: f32, g: f32, b: f32) -> BackgroundColor {
+pub fn brgb(r: f32, g: f32, b: f32) -> BackgroundColor {
     Color::rgb(r, g, b).into()
 }
 
-pub fn rgba(r: f32, g: f32, b: f32, a: f32) -> BackgroundColor {
+pub fn brgba(r: f32, g: f32, b: f32, a: f32) -> BackgroundColor {
     Color::rgba(r, g, b, a).into()
 }
+
 
 pub const fn auto() -> Val {
     Val::Auto
