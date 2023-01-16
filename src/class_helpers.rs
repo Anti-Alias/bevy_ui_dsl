@@ -30,7 +30,7 @@ pub const FLEX: Display = Display::Flex;
 pub const NONE: Display = Display::None;
 
 pub const ROW: FlexDirection = FlexDirection::Row;
-pub const COLUMNS: FlexDirection = FlexDirection::Column;
+pub const COLUMN: FlexDirection = FlexDirection::Column;
 pub const ROW_REVERSE: FlexDirection = FlexDirection::RowReverse;
 pub const COLUMN_REVERSE: FlexDirection = FlexDirection::ColumnReverse;
 
@@ -49,7 +49,6 @@ pub const ABSOLUTE: PositionType = PositionType::Absolute;
 
 pub const NO_WRAP: FlexWrap = FlexWrap::NoWrap;
 pub const WRAP: FlexWrap = FlexWrap::Wrap;
-
 
 
 pub fn size(width: Val, height: Val) -> Size {
