@@ -114,7 +114,7 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 ```
 
 Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
-It is recommended that you only set the fields you wish to overwrite in your classes. Be careful, for instance, of using ```..default()``` as this will overwrite even the fields you don't specify.
+It is recommended that you only set the fields you wish to overwrite in your classes. Be careful, for instance, of using ```..default()``` as this will overwrite even the fields you don't specify. This is very bad when combining classes using the tuple syntax.
 
 
 ## Widget Example
