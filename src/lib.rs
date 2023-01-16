@@ -1,10 +1,9 @@
 mod widgets;
-mod class_helpers;
+#[cfg(feature = "class_helpers")]
+pub mod class_helpers;
 
 use bevy_text::TextStyle;
 pub use widgets::*;
-#[cfg(feature = "class_helpers")]
-pub use class_helpers;
 use bevy_ui::node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle};
 use bevy_asset::AssetServer;
 use bevy_ecs::entity::Entity;
