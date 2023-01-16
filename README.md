@@ -54,21 +54,16 @@ Like **root**, **node** also takes in a class (or a tuple of classes) and spawns
 
 ```rust
 fn c_root(b: &mut NodeBundle) {
-    b.style = Style {
-        size: Size::new(Val::Percent(100.), Val::Percent(100.)),
-        ..default()
-    };
+    b.style.size = Size::new(Val::Percent(100.), Val::Percent(100.));
 }
 
 fn c_half(b: &mut NodeBundle) {
-    b.style = Style {
-        size: Size::new(Val::Percent(50.), Val::Percent(100.)),
-        flex_direction: FlexDirection::Column,
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        padding: UiRect::all(Val::Px(10.)),
-        ..default()
-    };
+    let s = &mut b.style;
+    s.size = Size::new(Val::Percent(50.), Val::Percent(100.));
+    s.flex_direction = FlexDirection::Column;
+    s.justify_content = JustifyContent::Center;
+    s.align_items = AlignItems::Center;
+    s.padding = UiRect::all(Val::Px(10.));
 }
 
 fn c_green(b: &mut NodeBundle) {
@@ -80,47 +75,34 @@ fn c_blue(b: &mut NodeBundle) {
 }
 
 fn c_text(_a: &AssetServer, b: &mut TextBundle) {
-    b.style = Style {
-        margin: UiRect::all(Val::Px(10.)),
-        ..default()
-    };
+    b.style.margin = UiRect::all(Val::Px(10.));
 }
 
 fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
-    b.style = Style {
-        size: Size::new(Val::Px(64.), Val::Px(24.)),
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        ..default()
-    };
+    let s = &mut b.style;
+    s.size = Size::new(Val::Px(64.), Val::Px(24.));
+    s.justify_content = JustifyContent::Center;
+    s.align_items = AlignItems::Center;
     b.background_color = Color::rgb_u8(66, 135, 245).into();
     b.image = assets.load("button.png").into();
 }
 
 fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
-    b.style = Style {
-        size: Size::new(Val::Px(64.), Val::Px(24.)),
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        ..default()
-    };
+    let s = &mut b.style;
+    s.size = Size::new(Val::Px(64.), Val::Px(24.));
+    s.justify_content = JustifyContent::Center;
+    s.align_items = AlignItems::Center;
     b.background_color = Color::rgb_u8(57, 179, 118).into();
     b.image = assets.load("button.png").into();
 }
 
 fn c_grid(b: &mut NodeBundle) {
-    b.style = Style {
-        size: Size::new(Val::Px(200.), Val::Px(200.)),
-        margin: UiRect::all(Val::Px(10.)),
-        ..default()
-    };
+    b.style.size = Size::new(Val::Px(200.), Val::Px(200.));
+    b.style.margin = UiRect::all(Val::Px(10.));
 }
 
 fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
-    b.style = Style {
-        size: Size::new(Val::Px(32.), Val::Px(32.)),
-        ..default()
-    };
+    b.style.size = Size::new(Val::Px(32.), Val::Px(32.));
     b.image = assets.load("item_slot.png").into();
 }
 
