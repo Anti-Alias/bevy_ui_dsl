@@ -28,6 +28,14 @@ pub fn px(num: impl Tof32) -> Val {
     Val::Px(num.to_f32())
 }
 
+pub const fn auto() -> Val {
+    Val::Auto
+}
+
+pub const fn undefined() -> Val {
+    Val::Undefined
+}
+
 pub trait Tof32 {
     fn to_f32(self) -> f32;
 }
