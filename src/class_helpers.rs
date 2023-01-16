@@ -8,16 +8,32 @@ pub fn rect(left: Val, right: Val, top: Val, bottom: Val) -> UiRect {
     UiRect::new(left, right, bottom, top)
 }
 
-pub fn rect_all(value: Val) -> UiRect {
+pub fn all(value: Val) -> UiRect {
     UiRect::all(value)
 }
 
-pub fn rect_horizontal(value: Val) -> UiRect {
+pub fn horozontal(value: Val) -> UiRect {
     UiRect::horizontal(value)
 }
 
-pub fn rect_vertical(value: Val) -> UiRect {
+pub fn vertical(value: Val) -> UiRect {
     UiRect::vertical(value)
+}
+
+pub fn left(value: Val) -> UiRect {
+    UiRect::left(value)
+}
+
+pub fn right(value: Val) -> UiRect {
+    UiRect::right(value)
+}
+
+pub fn top(value: Val) -> UiRect {
+    UiRect::top(value)
+}
+
+pub fn bottom(value: Val) -> UiRect {
+    UiRect::bottom(value)
 }
 
 pub fn pc(num: impl Tof32) -> Val {
