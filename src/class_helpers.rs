@@ -1,3 +1,6 @@
+//! A module that provides helper constants and functions that make creating classes simpler.
+//! Feature flag 'class_helpers' must be enabled to use this module.
+
 use bevy_ui::{Val, Size, UiRect, BackgroundColor, Display, PositionType, AlignItems, AlignSelf, AlignContent, Direction, FlexDirection, JustifyContent, Overflow, FlexWrap};
 use bevy_render::color::Color;
 

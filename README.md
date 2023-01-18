@@ -5,6 +5,8 @@ A "domain specific language" designed to make building UIs in Bevy more pleasant
 ## UI Example
 
 ```rust
+use bevy_ui_dsl::*;
+
 fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
 
     // Obligatory camera
@@ -116,8 +118,27 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
 It is recommended that you only set the fields you wish to overwrite in your classes. Be careful, for instance, of using ```..default()``` as this will overwrite even the fields you don't specify. This is very bad when combining classes using the tuple syntax.
 
+## Class Helpers
+To make creating classes a little less verbose, there is an optional module you can import called **class_helpers**.
+This module is made available by enabling the feature flag **class_helpers** in your Cargo.toml file. It includes various helper functions and constants to make your life easier. It is recommended that you put your class functions in their own module when using these helpers to avoid namespace pollution with the rest of your UI code.
+
+```rust
+use bevy_ui_dsl::*;
+use bevy_ui_dsl::class_helpers::*;
+
+fn c_node(b: &mut NodeBundle) {
+    let s = &mut b.style;
+    s.size = size(pc(50), pc(50));
+    s.flex_direction = COLUMN;
+    s.justify_content = JUSTIFY_CENTER;
+    s.align_items = ALIGN_CENTER;
+    s.padding = all(px(10));
+}
+```
+
 
 ## Widget Example
+Creating a widget is just a matter of creating a function that follows a certain convention. No more, no less. It will usually require a **Class<T>** or **AssetClass<T>** (can be a callback function, or tuple of callback functions), a parent (needed to spawn the widget itself), and, for container widgets, a callback function used to spawn children of the widget. See [widgets.rs](src/widgets.rs) for examples.
 ```rust
 /// Spawns a [`NodeBundle`] with children.
 pub fn node(

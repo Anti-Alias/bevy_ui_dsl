@@ -5,10 +5,7 @@ use bevy_ecs::system::Commands;
 use bevy_ui::{Size, Val, FlexWrap, Style, JustifyContent, AlignItems};
 use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::BuildChildren;
-use crate::AssetClass;
-
-use super::Class;
-use super::UiChildBuilder;
+use super::{Class, AssetClass, UiChildBuilder};
 
 
 /// Spawns a [`NodeBundle`] as the root with children.
@@ -122,8 +119,8 @@ pub fn image_pane(
         .with_children(children).id()
 }
 
-/// Spawns a [`NodeBundle`] which children [`NodeBundle`]s acting as the cells of a grid.
-/// The callback allows for spawing children in those cells.
+/// Spawns a [`NodeBundle`] composed of [`NodeBundle`] cells in the form of a grid.
+/// The callback function argument spawns the contents of those cells.
 pub fn grid(
     rows: usize,
     columns: usize,

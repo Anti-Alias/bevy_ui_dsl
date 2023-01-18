@@ -1,3 +1,5 @@
+//! This crate simplifies the process of creating widgets in bevy using a simple extensible DSL.
+
 mod widgets;
 #[cfg(feature = "class_helpers")]
 pub mod class_helpers;
