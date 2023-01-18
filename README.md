@@ -152,3 +152,9 @@ pub fn node(
 }
 
 ```
+
+## Compatibility
+
+| bevy | bevy-ui-dsl |
+| ---- | ----------- |
+| 0.9  | 0.1         |
