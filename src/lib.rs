@@ -63,6 +63,10 @@ pub trait Class<B> {
     fn apply(self, b: &mut B);
 }
 
+impl<T> Class<T> for () {
+    fn apply(self, _b: &mut T) {}
+}
+
 impl<F, B> Class<B> for F
 where
     F: FnOnce(&mut B),
@@ -129,6 +133,10 @@ impl Class<ImageBundle> for ImageBundle {
 /// Depends on an [`AssetServer`], unlike [`Class`].
 pub trait AssetClass<B> {
     fn apply(self, assets: &AssetServer, b: &mut B);
+}
+
+impl<T> AssetClass<T> for () {
+    fn apply(self, _assets: &AssetServer, _b: &mut T) {}
 }
 
 impl<F, B> AssetClass<B> for F
