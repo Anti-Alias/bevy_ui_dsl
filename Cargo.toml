@@ -1,10 +1,10 @@
 [package]
 name = "bevy-ui-dsl"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Anti-Alias"]
-description = "A DSL library that simplifies the creation widgets for bevy_ui."
+description = "A DSL library that simplifies the creation of widgets for bevy_ui."
 repository = "https://github.com/Anti-Alias/bevy_ui_dsl"
 homepage = "https://github.com/Anti-Alias/bevy_ui_dsl"
 keywords = ["bevy", "dsl", "gui", "gamedev"]
