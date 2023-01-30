@@ -46,7 +46,7 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
         self.commands.insert(bundle);
         self
     }
-    fn with_children(mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> Self {
+    pub fn with_children(mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> Self {
         self.commands.with_children(|builder| {
             let mut ui_builder = UiChildBuilder {
                 assets: self.assets,
