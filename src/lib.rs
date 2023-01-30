@@ -201,10 +201,14 @@ impl AssetClass<TextStyle> for TextStyle {
 /// ergonomically.
 pub trait EntityWriter {
     fn set(self, entity: &mut Option<Entity>);
+    fn push(self, destination: &mut Vec<Entity>);
 }
 
 impl EntityWriter for Entity {
     fn set(self, entity: &mut Option<Entity>) {
         *entity = Some(self);
+    }
+    fn push(self, destination: &mut Vec<Entity>) {
+        destination.push(self);
     }
 }
