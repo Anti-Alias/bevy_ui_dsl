@@ -5,6 +5,7 @@ use bevy_ecs::system::Commands;
 use bevy_ui::{Size, Val, FlexWrap, Style, JustifyContent, AlignItems};
 use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::BuildChildren;
+use bevy_render::color::Color;
 use super::{Class, AssetClass, UiChildBuilder};
 
 
@@ -17,6 +18,34 @@ pub fn root(
 ) -> Entity {
     let mut bundle = NodeBundle::default();
     class.apply(&mut bundle);
+    commands
+        .spawn(bundle)
+        .with_children(|builder| {
+            let mut builder = UiChildBuilder {
+                builder,
+                assets
+            };
+            children(&mut builder);
+        })
+        .id()
+}
+
+
+/// Spawns a clear [`NodeBundle`] that takes up the full space of its parent.
+/// Often required for embedding other widgets after the initial widget is spawned.
+pub fn blank(
+    assets: &AssetServer,
+    commands: &mut Commands,
+    children: impl FnOnce(&mut UiChildBuilder)
+) -> Entity {
+    let bundle = NodeBundle {
+        style: Style {
+            size: Size::new(Val::Percent(100.), Val::Percent(100.)),
+            ..Default::default()
+        },
+        background_color: Color::NONE.into(),
+        ..Default::default()
+    };
     commands
         .spawn(bundle)
         .with_children(|builder| {
