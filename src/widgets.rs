@@ -35,6 +35,7 @@ pub fn root(
 /// Often required for embedding other widgets after the initial widget is spawned.
 pub fn blank(
     parent: Entity,
+    class: impl Class<NodeBundle>,
     assets: &AssetServer,
     commands: &mut Commands,
     children: impl FnOnce(&mut UiChildBuilder)
@@ -42,14 +43,8 @@ pub fn blank(
     commands
         .entity(parent)
         .with_children(|builder| {
-            let bundle = NodeBundle {
-                style: Style {
-                    size: Size::new(Val::Percent(100.), Val::Percent(100.)),
-                    ..Default::default()
-                },
-                background_color: Color::NONE.into(),
-                ..Default::default()
-            };
+            let mut bundle = NodeBundle::default();
+            class.apply(&mut bundle);
             let mut builder = UiChildBuilder {
                 builder,
                 assets
