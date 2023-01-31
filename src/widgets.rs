@@ -71,7 +71,7 @@ pub fn node(
 
 /// Spawns a [`TextBundle`].
 pub fn text(
-    text: &str,
+    text: impl Into<String>,
     class: impl AssetClass<TextBundle>,
     text_class: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
@@ -82,7 +82,7 @@ pub fn text(
     let mut style = TextStyle::default();
     text_class.apply(parent.assets, &mut style);
     sections.push(TextSection {
-        value: text.to_string(),
+        value: text.into(),
         style,
     });
     parent.spawn(bundle).id()
@@ -114,7 +114,7 @@ pub fn simple_button(
 
 /// Spawns a [`ButtonBundle`] with a single [`TextBundle`] as its child.
 pub fn text_button(
-    txt: &str,
+    txt: impl Into<String>,
     class: impl AssetClass<ButtonBundle>,
     text_style: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
