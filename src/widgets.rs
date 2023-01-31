@@ -34,26 +34,27 @@ pub fn root(
 /// Spawns a clear [`NodeBundle`] that takes up the full space of its parent.
 /// Often required for embedding other widgets after the initial widget is spawned.
 pub fn blank(
+    parent: Entity,
     assets: &AssetServer,
     commands: &mut Commands,
     children: impl FnOnce(&mut UiChildBuilder)
 ) -> Entity {
-    let bundle = NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.), Val::Percent(100.)),
-            ..Default::default()
-        },
-        background_color: Color::NONE.into(),
-        ..Default::default()
-    };
     commands
-        .spawn(bundle)
+        .entity(parent)
         .with_children(|builder| {
+            let bundle = NodeBundle {
+                style: Style {
+                    size: Size::new(Val::Percent(100.), Val::Percent(100.)),
+                    ..Default::default()
+                },
+                background_color: Color::NONE.into(),
+                ..Default::default()
+            };
             let mut builder = UiChildBuilder {
                 builder,
                 assets
             };
-            children(&mut builder);
+            builder.spawn(bundle).with_children(children);
         })
         .id()
 }
