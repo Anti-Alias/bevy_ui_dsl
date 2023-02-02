@@ -5,7 +5,6 @@ use bevy_ecs::system::Commands;
 use bevy_ui::{Size, Val, FlexWrap, Style, JustifyContent, AlignItems};
 use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::BuildChildren;
-use bevy_render::color::Color;
 use super::{Class, AssetClass, UiChildBuilder};
 
 
