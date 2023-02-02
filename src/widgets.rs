@@ -115,9 +115,8 @@ pub fn text_button(
     text_style: impl AssetClass<TextStyle>,
     parent: &mut UiChildBuilder
 ) -> Entity {
-    fn c_text(_a: &AssetServer,_b: &mut TextBundle) {}       // No need to overwrite the default!
     button(class, parent, |p| {
-        text(txt, c_text, text_style, p);
+        text(txt, (), text_style, p);
     })
 }
 
