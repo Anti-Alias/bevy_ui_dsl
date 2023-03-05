@@ -12,15 +12,15 @@ categories = ["gui", "game-development"]
 readme = "README.md"
 
 [dependencies]
-bevy_ui = "0.9"
-bevy_text = "0.9"
-bevy_ecs = "0.9"
-bevy_hierarchy = "0.9"
-bevy_asset = "0.9"
-bevy_render = "0.9"
+bevy_ui = { git = "https://github.com/bevyengine/bevy", features = ["bevy_text"] }
+bevy_text = { git = "https://github.com/bevyengine/bevy" }
+bevy_ecs = { git = "https://github.com/bevyengine/bevy" }
+bevy_hierarchy = { git = "https://github.com/bevyengine/bevy" }
+bevy_asset = { git = "https://github.com/bevyengine/bevy" }
+bevy_render = { git = "https://github.com/bevyengine/bevy" }
 
 [dev-dependencies]
-bevy = "0.9"
+bevy = { git = "https://github.com/bevyengine/bevy" }
 
 [features]
 class_helpers = []
