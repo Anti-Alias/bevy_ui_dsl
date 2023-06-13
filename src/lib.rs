@@ -78,40 +78,40 @@ where
 
 impl<F1, F2, B> Class<B> for (F1, F2)
 where
-    F1: FnOnce(&mut B),
-    F2: FnOnce(&mut B)
+    F1: Class<B>,
+    F2: Class<B>,
 {
     fn apply(self, b: &mut B) {
-        self.0(b);
-        self.1(b);
+        self.0.apply(b);
+        self.1.apply(b);
     }
 }
 
 impl<F1, F2, F3, B> Class<B> for (F1, F2, F3)
 where
-    F1: FnOnce(&mut B),
-    F2: FnOnce(&mut B),
-    F3: FnOnce(&mut B)
+    F1: Class<B>,
+    F2: Class<B>,
+    F3: Class<B>,
 {
     fn apply(self, b: &mut B) {
-        self.0(b);
-        self.1(b);
-        self.2(b);
+        self.0.apply(b);
+        self.1.apply(b);
+        self.2.apply(b);
     }
 }
 
 impl<F1, F2, F3, F4, B> Class<B> for (F1, F2, F3, F4)
 where
-    F1: FnOnce(&mut B),
-    F2: FnOnce(&mut B),
-    F3: FnOnce(&mut B),
-    F4: FnOnce(&mut B)
+    F1: Class<B>,
+    F2: Class<B>,
+    F3: Class<B>,
+    F4: Class<B>,
 {
     fn apply(self, b: &mut B) {
-        self.0(b);
-        self.1(b);
-        self.2(b);
-        self.3(b);
+        self.0.apply(b);
+        self.1.apply(b);
+        self.2.apply(b);
+        self.3.apply(b);
     }
 }
 
@@ -150,40 +150,40 @@ where
 
 impl<F1, F2, B> AssetClass<B> for (F1, F2)
 where
-    F1: FnOnce(&AssetServer, &mut B),
-    F2: FnOnce(&AssetServer, &mut B)
+    F1: AssetClass<B>,
+    F2: AssetClass<B>,
 {
     fn apply(self, a: &AssetServer, b: &mut B) {
-        self.0(a, b);
-        self.1(a, b);
+        self.0.apply(a, b);
+        self.1.apply(a, b);
     }
 }
 
 impl<F1, F2, F3, B> AssetClass<B> for (F1, F2, F3)
 where
-    F1: FnOnce(&AssetServer, &mut B),
-    F2: FnOnce(&AssetServer, &mut B),
-    F3: FnOnce(&AssetServer, &mut B)
+    F1: AssetClass<B>,
+    F2: AssetClass<B>,
+    F3: AssetClass<B>,
 {
     fn apply(self, a: &AssetServer, b: &mut B) {
-        self.0(a, b);
-        self.1(a, b);
-        self.2(a, b);
+        self.0.apply(a, b);
+        self.1.apply(a, b);
+        self.2.apply(a, b);
     }
 }
 
 impl<F1, F2, F3, F4, B> AssetClass<B> for (F1, F2, F3, F4)
 where
-    F1: FnOnce(&AssetServer, &mut B),
-    F2: FnOnce(&AssetServer, &mut B),
-    F3: FnOnce(&AssetServer, &mut B),
-    F4: FnOnce(&AssetServer, &mut B)
+    F1: AssetClass<B>,
+    F2: AssetClass<B>,
+    F3: AssetClass<B>,
+    F4: AssetClass<B>,
 {
     fn apply(self, a: &AssetServer, b: &mut B) {
-        self.0(a, b);
-        self.1(a, b);
-        self.2(a, b);
-        self.3(a, b);
+        self.0.apply(a, b);
+        self.1.apply(a, b);
+        self.2.apply(a, b);
+        self.3.apply(a, b);
     }
 }
 

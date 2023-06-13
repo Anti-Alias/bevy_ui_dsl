@@ -12,15 +12,15 @@ categories = ["gui", "game-development"]
 readme = "README.md"
 
 [dependencies]
-bevy_ui = "0.9"
-bevy_text = "0.9"
-bevy_ecs = "0.9"
-bevy_hierarchy = "0.9"
-bevy_asset = "0.9"
-bevy_render = "0.9"
+bevy_ui = { version = "0.10", features = ["bevy_text"] }
+bevy_text = "0.10"
+bevy_ecs = "0.10"
+bevy_hierarchy = "0.10"
+bevy_asset = "0.10"
+bevy_render = "0.10"
 
 [dev-dependencies]
-bevy = "0.9"
+bevy = "0.10"
 
 [features]
 class_helpers = []
