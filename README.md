@@ -4,6 +4,8 @@ A "domain specific language" designed to make building UIs in Bevy more pleasant
 
 ## UI Example
 
+![Example Image](example.png)
+
 ```rust
 use bevy_ui_dsl::*;
 
