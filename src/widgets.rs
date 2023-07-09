@@ -2,7 +2,7 @@ use bevy_asset::AssetServer;
 use bevy_text::{TextStyle, TextSection};
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::Commands;
-use bevy_ui::{Size, Val, FlexWrap, Style, JustifyContent, AlignItems};
+use bevy_ui::{Val, FlexWrap, Style, JustifyContent, AlignItems};
 use bevy_ui::node_bundles::{NodeBundle, TextBundle, ButtonBundle, ImageBundle};
 use bevy_hierarchy::BuildChildren;
 use super::{Class, AssetClass, UiChildBuilder};
@@ -160,10 +160,8 @@ pub fn grid(
     // Spawns cells as children of the container
     let cell_bundle = NodeBundle {
         style: Style {
-            size: Size::new(
-                Val::Percent(100.0 / columns as f32),
-                Val::Percent(100.0 / rows as f32)
-            ),
+            width: Val::Percent(100.0 / columns as f32),
+            height: Val::Percent(100.0 / rows as f32),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
             ..Default::default()

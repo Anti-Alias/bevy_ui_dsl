@@ -1,7 +1,7 @@
 //! A module that provides helper constants and functions that make creating classes simpler.
 //! Feature flag 'class_helpers' must be enabled to use this module.
 
-use bevy_ui::{Val, Size, UiRect, BackgroundColor, Display, PositionType, AlignItems, AlignSelf, AlignContent, Direction, FlexDirection, JustifyContent, Overflow, FlexWrap};
+use bevy_ui::{Val, UiRect, BackgroundColor, Display, PositionType, AlignItems, AlignSelf, AlignContent, Direction, FlexDirection, JustifyContent, Overflow, OverflowAxis, FlexWrap};
 use bevy_render::color::Color;
 
 pub const ALIGN_FLEX_START: AlignItems = AlignItems::FlexStart;
@@ -44,19 +44,14 @@ pub const JUSTIFY_SPACE_BETWEEN: JustifyContent = JustifyContent::SpaceBetween;
 pub const JUSTIFY_SPACE_AROUND: JustifyContent = JustifyContent::SpaceAround;
 pub const JUSTIFY_SPACE_EVENLY: JustifyContent = JustifyContent::SpaceEvenly;
 
-pub const VISIBLE: Overflow = Overflow::Visible;
-pub const HIDDEN: Overflow = Overflow::Hidden;
+pub const VISIBLE: Overflow = Overflow { x: OverflowAxis::Visible, y: OverflowAxis::Visible };
+pub const CLIP: Overflow = Overflow { x: OverflowAxis::Clip, y: OverflowAxis::Clip };
 
 pub const RELATIVE: PositionType = PositionType::Relative;
 pub const ABSOLUTE: PositionType = PositionType::Absolute;
 
 pub const NO_WRAP: FlexWrap = FlexWrap::NoWrap;
 pub const WRAP: FlexWrap = FlexWrap::Wrap;
-
-
-pub fn size(width: Val, height: Val) -> Size {
-    Size::new(width, height)
-}
 
 pub fn rect(left: Val, right: Val, top: Val, bottom: Val) -> UiRect {
     UiRect::new(left, right, bottom, top)
@@ -133,10 +128,6 @@ pub fn brgba(r: f32, g: f32, b: f32, a: f32) -> BackgroundColor {
 
 pub const fn auto() -> Val {
     Val::Auto
-}
-
-pub const fn undefined() -> Val {
-    Val::Undefined
 }
 
 pub trait Tof32 {

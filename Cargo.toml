@@ -1,6 +1,6 @@
 [package]
 name = "bevy-ui-dsl"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Anti-Alias"]
@@ -12,15 +12,15 @@ categories = ["gui", "game-development"]
 readme = "README.md"
 
 [dependencies]
-bevy_ui = { version = "0.10", features = ["bevy_text"] }
-bevy_text = "0.10"
-bevy_ecs = "0.10"
-bevy_hierarchy = "0.10"
-bevy_asset = "0.10"
-bevy_render = "0.10"
+bevy_ui = { version = "0.11", features = ["bevy_text"] }
+bevy_text = "0.11"
+bevy_ecs = "0.11"
+bevy_hierarchy = "0.11"
+bevy_asset = "0.11"
+bevy_render = "0.11"
 
 [dev-dependencies]
-bevy = "0.10"
+bevy = "0.11"
 
 [features]
 class_helpers = []

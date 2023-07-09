@@ -11,8 +11,8 @@ enum UiId {
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))    // Nearest neighbor scaling for pixel graphics!
-        .add_startup_system(startup)
-        .add_system(handle_interactions)
+        .add_systems(Startup, startup)
+        .add_systems(Update, handle_interactions)
         .run();
 }
 
@@ -42,7 +42,8 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
         });
     });
 
-    // Inserts marker components into the gathered entities
+    // Inserts marker components into the gathered entities.
+    // Useful when you need to interact with specific entities in the UI.
     commands
         .entity(hiya.unwrap())
         .insert(UiId::HiyaButton);
@@ -54,12 +55,14 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
 // ----- Classes (they're really just callback functions that modify bundles / text styles, but it's useful to think of them as .css classes) -----
 fn c_root(b: &mut NodeBundle) {
-    b.style.size = Size::new(Val::Percent(100.), Val::Percent(100.));
+    b.style.width = Val::Percent(100.);
+    b.style.height = Val::Percent(100.)
 }
 
 fn c_half(b: &mut NodeBundle) {
     let s = &mut b.style;
-    s.size = Size::new(Val::Percent(50.), Val::Percent(100.));
+    s.width = Val::Percent(50.);
+    s.height = Val::Percent(100.);
     s.flex_direction = FlexDirection::Column;
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
@@ -80,7 +83,8 @@ fn c_text(_a: &AssetServer, b: &mut TextBundle) {
 
 fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
     let s = &mut b.style;
-    s.size = Size::new(Val::Px(64.), Val::Px(24.));
+    s.width = Val::Px(64.);
+    s.height = Val::Px(24.);
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
     b.background_color = Color::rgb_u8(66, 135, 245).into();
@@ -89,7 +93,8 @@ fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
 
 fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
     let s = &mut b.style;
-    s.size = Size::new(Val::Px(64.), Val::Px(24.));
+    s.width = Val::Px(64.);
+    s.height = Val::Px(24.);
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
     b.background_color = Color::rgb_u8(57, 179, 118).into();
@@ -97,12 +102,14 @@ fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
 }
 
 fn c_grid(b: &mut NodeBundle) {
-    b.style.size = Size::new(Val::Px(200.), Val::Px(200.));
+    b.style.width = Val::Px(200.);
+    b.style.height = Val::Px(200.);
     b.style.margin = UiRect::all(Val::Px(10.));
 }
 
 fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
-    b.style.size = Size::new(Val::Px(32.), Val::Px(32.));
+    b.style.width = Val::Px(32.);
+    b.style.height = Val::Px(32.);
     b.image = assets.load("item_slot.png").into();
 }
 
@@ -116,9 +123,9 @@ fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
 fn handle_interactions(ui_entities: Query<(&UiId, &Interaction), Changed<Interaction>>) {
     for (id, inter) in &ui_entities {
         match (id, inter) {
-            (UiId::HiyaButton, Interaction::Clicked) => println!("Hiya button clicked!!!"),
+            (UiId::HiyaButton, Interaction::Pressed) => println!("Hiya button pressed!!!"),
             (UiId::HiyaButton, Interaction::Hovered) => println!("Hiya button hovered!!!"),
-            (UiId::HowdyButton, Interaction::Clicked) => println!("Howdy button clicked!!!"),
+            (UiId::HowdyButton, Interaction::Pressed) => println!("Howdy button pressed!!!"),
             (UiId::HowdyButton, Interaction::Hovered) => println!("Howdy button hovered!!!"),
             _ => {}
         }
