@@ -1,6 +1,6 @@
 # Bevy UI DSL
 
-A "domain specific language" designed to make building UIs in Bevy more pleasant. This DSL uses the same ingredients that **bevy_ui** uses, so those already familiar with **bevy_ui** should have an easy time learning it.
+A tiny, plugin-less, macro-less "domain specific language" designed to make building UIs in Bevy more pleasant. This DSL uses the same ingredients that **bevy_ui** uses, so those already familiar with **bevy_ui** should have an easy time learning it.
 
 ## UI Example
 
@@ -48,11 +48,55 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 ```
 
 This system spawns a UI using widgets like **root**, **node**, **text**, **text_button**, etc.
-You can even create your own widgets! They're just functions!
+You can even create your own widgets! They're just functions! The callback approach is heavily inspired by [egui](https://github.com/emilk/egui).
 
 In this example, **root** is a function that takes a class called **c_root**. The **c_root** function just manipulates a NodeBundle, which is NodeBundle::default() by default. Ultimately, the NodeBundle in question gets spawned.
 
 Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a NodeBundle. When a tuple of classes is supplied, the callback functions are applied in order of left to right.
+
+Widget functions return the entity spawned. Through extension methods, these entity ids can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two escape functions:
+```rust
+impl EntityWriter for Entity {
+    /// Copies this entity into an Option.
+    fn set(self, entity: &mut Option<Entity>) {
+        *entity = Some(self);
+    }
+    /// Pushes a copy of this Entity into a Vec.
+    fn push(self, entities: &mut Vec<Entity>) {
+        entities.push(self);
+    }
+}
+```
+
+Oftentimes, though, it's easier to insert a marker component on the fly instead of inserting it later. For this reason, every built-in widget has an inline variant.
+These variants accept an extra bundle that will be inserted alongside the main one.
+
+| base          | inline        |
+|---------------|---------------|
+| root          | rooti         |
+| blank         | blanki        |
+| node          | nodei         |
+| text          | texti         |
+| button        | buttoni       |
+| simple_button | simple_buttoni|
+| text_button   | text_buttoni  |
+| image         | imagei        |
+| image_pane    | image_panei   |
+| grid          | gridi         |
+
+So, instead of:
+```rust
+text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya)
+/// ... then later ...
+commands.entity(hiya.unwrap()).insert(UiId::HiyaButton);
+```
+One can write:
+```rust
+text_buttoni("Hiya", c_button_left, c_pixel, UiId::HiyaButton);
+```
+Feel free to compare and constrast
+[example.rs](examples/example_inline.rs) with [example_inline.rs](examples/example_inline.rs). Which style you pick comes down to taste and situation. The "set" and "push" style is better when the insertion logic is complex and easily separatable. The "inline" style is better for marker components, as well as situations where separating the UI logic from the insertion logic is inconvenient.
+
 
 ## Class Examples
 
@@ -166,6 +210,6 @@ pub fn node(
 
 | bevy | bevy-ui-dsl |
 | ---- | ----------- |
-| 0.11 | 0.5         |
+| 0.11 | 0.5 - 0.6   |
 | 0.10 | 0.3 - 0.4   |
 | 0.9  | 0.1 - 0.2   |

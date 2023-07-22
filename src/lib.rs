@@ -213,10 +213,12 @@ pub trait EntityWriter {
 }
 
 impl EntityWriter for Entity {
+    /// Copies this entity into an Option.
     fn set(self, entity: &mut Option<Entity>) {
         *entity = Some(self);
     }
-    fn push(self, destination: &mut Vec<Entity>) {
-        destination.push(self);
+    /// Pushes a copy of this Entity into a Vec.
+    fn push(self, entities: &mut Vec<Entity>) {
+        entities.push(self);
     }
 }
