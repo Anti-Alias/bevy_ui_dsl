@@ -54,7 +54,7 @@ In this example, **root** is a function that takes a class called **c_root**. Th
 
 Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a NodeBundle. When a tuple of classes is supplied, the callback functions are applied in order of left to right.
 
-Widget functions return the entity spawned. Through extension methods, these entity ids can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two escape functions:
+Widget functions return the entity spawned. Through extension methods, these entity ids can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two escape methods:
 ```rust
 impl EntityWriter for Entity {
     /// Copies this entity into an Option.
@@ -69,7 +69,7 @@ impl EntityWriter for Entity {
 ```
 
 Oftentimes, though, it's easier to insert a marker component on the fly instead of inserting it later. For this reason, every built-in widget has an inline variant.
-These variants accept an extra bundle that will be inserted alongside the main one.
+These variants accept an extra bundle as an argument.
 
 | base          | inline        |
 |---------------|---------------|

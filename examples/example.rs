@@ -3,7 +3,6 @@ use bevy::prelude::*;
 use bevy_ui_dsl::*;
 use classes::*;
 
-
 /// Marker component for specific entities in the UI
 #[derive(Component, Debug)]
 enum UiId {
