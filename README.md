@@ -95,7 +95,7 @@ One can write:
 text_buttoni("Hiya", c_button_left, c_pixel, UiId::HiyaButton);
 ```
 Feel free to compare and constrast
-[example.rs](examples/example_inline.rs) with [example_inline.rs](examples/example_inline.rs). Which style you pick comes down to taste and situation. The "set" and "push" style is better when the insertion logic is complex and easily separatable. The "inline" style is better for marker components, as well as situations where separating the UI logic from the insertion logic is inconvenient.
+[example.rs](examples/example.rs) with [example_inline.rs](examples/example_inline.rs). Which style you pick comes down to taste and situation. The "set" and "push" style is better when the insertion logic is complex and easily separatable. The "inline" style is better for marker components, as well as situations where separating the UI logic from the insertion logic is inconvenient.
 
 
 ## Class Examples
