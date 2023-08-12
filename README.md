@@ -26,7 +26,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
         node((c_column, c_green), p, |p| {                                      // Spawns the left pane as a NodeBundle.
             text("This is the left pane!", c_text, c_pixel, p);                 // Spawns a TextBundle.
             text("Do you like it?", c_text, c_pixel, p);
-            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);   // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
+            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);      // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
             grid(6, 6, c_grid, p, |p, _row, _col| {                             // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
                 image(c_inv_slot, p);
             });
