@@ -6,7 +6,7 @@ pub mod class_helpers;
 
 use bevy_text::TextStyle;
 pub use widgets::*;
-use bevy_ui::{node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle}, prelude::AtlasImageBundle};
+use bevy_ui::node_bundles::{NodeBundle, ImageBundle, AtlasImageBundle, TextBundle, ButtonBundle};
 use bevy_asset::AssetServer;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
