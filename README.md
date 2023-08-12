@@ -37,11 +37,11 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
             text("Indeed, I do!", c_text, c_pixel, p);
             text_button("Howdy", c_button_middle, c_pixel, p).set(&mut howdy);
         });
-    }).set(&mut root_id);
+    }).set(&mut root);
 
     // You can insert widgets to an existing entity after the fact.
     // Here, we're adding a third column to the UI.
-    commands.entity(root_id).with_ui_children(&assets, |p| {
+    commands.entity(root).with_ui_children(&assets, |p| {
         node((c_column, c_yellow), p, |p| {                                     // Spawns the right column as a NodeBundle.
             text("This is the right pane!", c_text, c_pixel, p);
             text("I say, don't quit your day job...", c_text, c_pixel, p);
