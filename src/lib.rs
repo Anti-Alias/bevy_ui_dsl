@@ -222,3 +222,22 @@ impl EntityWriter for Entity {
         entities.push(self);
     }
 }
+
+
+/// Allows for easy injection of a UI to an existing [`Entity`].
+pub trait BuildUiChildren {
+    fn with_ui_children(&mut self, asset: &AssetServer, f: impl FnOnce(&mut UiChildBuilder)) -> &mut Self;
+}
+
+impl<'w, 's, 'a> BuildUiChildren for EntityCommands<'w, 's, 'a> {
+    fn with_ui_children(
+        &mut self,
+        assets: &AssetServer,
+        f: impl FnOnce(&mut UiChildBuilder)
+    ) -> &mut Self {
+        self.with_children(|builder| {
+            let mut p = UiChildBuilder { builder, assets: &assets };
+            f(&mut p);
+        })
+    }
+}
