@@ -226,7 +226,7 @@ impl AssetClass<TextStyle> for TextStyle {
 
 /// Adds a helper method to [`Entity`] that allows it to be sent to some container of an [`Entity`] ergonomically.
 pub trait EntityWriter<E> {
-    fn set(self, entity: &mut E);
+    fn set(self, destination: &mut E);
 }
 
 /// Adds a helper method to [`Entity`] that allows it to be pushed to a Vec of entities ergonomically.
@@ -235,14 +235,14 @@ pub trait EntityPusher {
 }
 
 impl EntityWriter<Option<Entity>> for Entity {
-    fn set(self, entity: &mut Option<Entity>) {
-        *entity = Some(self);
+    fn set(self, destination: &mut Option<Entity>) {
+        *destination = Some(self);
     }
 }
 
 impl EntityWriter<Entity> for Entity {
-    fn set(self, entity: &mut Entity) {
-        *entity = self;
+    fn set(self, destination: &mut Entity) {
+        *destination = self;
     }
 }
 

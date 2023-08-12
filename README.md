@@ -66,7 +66,7 @@ Like **root**, **node** also takes in a class (or a tuple of classes) and spawns
 Widget functions return the entity spawned. With extension methods, these entities can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two traits responsible for this:
 ```rust
 pub trait EntityWriter<E> {
-    fn set(self, entity: &mut E);   // E is either an &mut Entity, or an &mut Option<Entity>.
+    fn set(self, destination: &mut E);  // E is either an &mut Entity, or an &mut Option<Entity>.
 }
 pub trait EntityPusher {
     fn push(self, destination: &mut Vec<Entity>);
