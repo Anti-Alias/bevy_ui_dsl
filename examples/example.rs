@@ -1,4 +1,5 @@
 mod classes;
+
 use bevy::prelude::*;
 use bevy_ui_dsl::*;
 use classes::*;
@@ -24,34 +25,43 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     commands.spawn(Camera2dBundle::default());
     scale.scale = 2.0;
 
-    // Spawns ui and gathers entity ids
-    let mut hiya = None;
-    let mut howdy = None;
-    root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer gets propagated.
-        node((c_half, c_green), p, |p| {                                        // Spawns the left pane as a NodeBundle.
+    // Allocates IDs that will be set later.
+    // IDs can also be Option<Entity> if that is what you prefer.
+    let mut root_id = Entity::PLACEHOLDER;
+    let mut hiya_id = Entity::PLACEHOLDER;
+    let mut howdy_id = Entity::PLACEHOLDER;
+    
+    // "root" usually kicks things off. It behaves the same as "node", but takes different arguments.
+    root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer and Commands get propagated.
+        node((c_column, c_green), p, |p| {                                      // Spawns the left pane as a NodeBundle.
             text("This is the left pane!", c_text, c_pixel, p);                 // Spawns a TextBundle.
             text("Do you like it?", c_text, c_pixel, p);
-            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);      // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
+            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya_id);   // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
             grid(6, 6, c_grid, p, |p, _row, _col| {                             // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
                 image(c_inv_slot, p);
             });
             text("Le grid", c_text, c_pixel, p);
         });
-        node((c_half, c_blue), p, |p| {
-            text("This is the right pane!", c_text, c_pixel, p);
+        node((c_column, c_blue), p, |p| {
+            text("This is the middle pane!", c_text, c_pixel, p);
             text("Indeed, I do!", c_text, c_pixel, p);
-            text_button("Howdy", c_button_right, c_pixel, p).set(&mut howdy);
+            text_button("Howdy", c_button_middle, c_pixel, p).set(&mut howdy_id);
+        });
+    }).set(&mut root_id);
+
+    // You can insert widgets to an existing entity after the fact.
+    // Here, we're adding a third column to the UI.
+    commands.entity(root_id).with_ui_children(&assets, |p| {
+        node((c_column, c_yellow), p, |p| {
+            text("This is the right pane!", c_text, c_pixel, p);
+            text("I say, don't quit your day job...", c_text, c_pixel, p);
         });
     });
 
     // Inserts marker components into the gathered entities.
     // Useful when you need to interact with specific entities in the UI.
-    commands
-        .entity(hiya.unwrap())
-        .insert(UiId::HiyaButton);
-    commands
-        .entity(howdy.unwrap())
-        .insert(UiId::HowdyButton);
+    commands.entity(hiya_id).insert(UiId::HiyaButton);
+    commands.entity(howdy_id).insert(UiId::HowdyButton);
 }
 
 // ---------- System that handles interactions with ui ----------

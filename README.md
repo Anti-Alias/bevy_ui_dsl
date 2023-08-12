@@ -15,34 +15,43 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     commands.spawn(Camera2dBundle::default());
     scale.scale = 2.0;
 
-    // Spawns ui and gathers entity ids
-    let mut hiya = None;
-    let mut howdy = None;
-    root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer gets propagated.
-        node((c_half, c_green), p, |p| {                                        // Spawns the left pane as a NodeBundle.
+    // Allocates IDs that will be set later.
+    // IDs can also be Option<Entity> if that is what you prefer.
+    let mut root = Entity::PLACEHOLDER;
+    let mut hiya = Entity::PLACEHOLDER;
+    let mut howdy = Entity::PLACEHOLDER;
+    
+    // "root" usually kicks things off. It behaves the same as "node", but takes different arguments.
+    root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer and Commands get propagated.
+        node((c_column, c_green), p, |p| {                                      // Spawns the left pane as a NodeBundle.
             text("This is the left pane!", c_text, c_pixel, p);                 // Spawns a TextBundle.
             text("Do you like it?", c_text, c_pixel, p);
-            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);      // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
+            text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);   // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
             grid(6, 6, c_grid, p, |p, _row, _col| {                             // Spawns a NodeBundle container with a NodeBundle for each cell (6x6).
                 image(c_inv_slot, p);
             });
             text("Le grid", c_text, c_pixel, p);
         });
-        node((c_half, c_blue), p, |p| {
-            text("This is the right pane!", c_text, c_pixel, p);
+        node((c_column, c_blue), p, |p| {
+            text("This is the middle pane!", c_text, c_pixel, p);
             text("Indeed, I do!", c_text, c_pixel, p);
-            text_button("Howdy", c_button_right, c_pixel, p).set(&mut howdy);
+            text_button("Howdy", c_button_middle, c_pixel, p).set(&mut howdy);
+        });
+    }).set(&mut root_id);
+
+    // You can insert widgets to an existing entity after the fact.
+    // Here, we're adding a third column to the UI.
+    commands.entity(root_id).with_ui_children(&assets, |p| {
+        node((c_column, c_yellow), p, |p| {
+            text("This is the right pane!", c_text, c_pixel, p);
+            text("I say, don't quit your day job...", c_text, c_pixel, p);
         });
     });
 
     // Inserts marker components into the gathered entities.
     // Useful when you need to interact with specific entities in the UI.
-    commands
-        .entity(hiya.unwrap())
-        .insert(UiId::HiyaButton);
-    commands
-        .entity(howdy.unwrap())
-        .insert(UiId::HowdyButton);
+    commands.entity(hiya_id).insert(UiId::HiyaButton);
+    commands.entity(howdy_id).insert(UiId::HowdyButton);
 }
 
 ```
@@ -52,19 +61,15 @@ You can even create your own widgets! They're just functions! The callback appro
 
 In this example, **root** is a function that takes a class called **c_root**. The **c_root** function just manipulates a NodeBundle, which is NodeBundle::default() by default. Ultimately, the NodeBundle in question gets spawned.
 
-Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a NodeBundle. When a tuple of classes is supplied, the callback functions are applied in order of left to right.
+Like **root**, **node** also takes in a class (or a tuple of classes) and spawns a NodeBundle. When a tuple of classes is supplied, the callback functions are applied in order of left to middle.
 
-Widget functions return the entity spawned. Through extension methods, these entity ids can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two escape methods:
+Widget functions return the entity spawned. With extension methods, these entities can be "escaped" so that components and bundles can be inserted later. This is great for separating the UI creation code from the bundle insertion code. There are two traits responsible for this:
 ```rust
-impl EntityWriter for Entity {
-    /// Copies this entity into an Option.
-    fn set(self, entity: &mut Option<Entity>) {
-        *entity = Some(self);
-    }
-    /// Pushes a copy of this Entity into a Vec.
-    fn push(self, entities: &mut Vec<Entity>) {
-        entities.push(self);
-    }
+pub trait EntityWriter<E> {
+    fn set(self, entity: &mut E);   // E is either an &mut Entity, or an &mut Option<Entity>.
+}
+pub trait EntityPusher {
+    fn push(self, destination: &mut Vec<Entity>);
 }
 ```
 
@@ -99,36 +104,38 @@ Feel free to compare and constrast
 
 
 ## Class Examples
-
 ```rust
-fn c_root(b: &mut NodeBundle) {
+pub fn c_root(b: &mut NodeBundle) {
     b.style.width = Val::Percent(100.);
     b.style.height = Val::Percent(100.)
 }
 
-fn c_half(b: &mut NodeBundle) {
+pub fn c_column(b: &mut NodeBundle) {
     let s = &mut b.style;
-    s.width = Val::Percent(50.);
-    s.height = Val::Percent(100.);
     s.flex_direction = FlexDirection::Column;
+    s.flex_grow = 1.0;
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
     s.padding = UiRect::all(Val::Px(10.));
 }
 
-fn c_green(b: &mut NodeBundle) {
+pub fn c_green(b: &mut NodeBundle) {
     b.background_color = Color::rgb_u8(125, 212, 148).into();
 }
 
-fn c_blue(b: &mut NodeBundle) {
+pub fn c_blue(b: &mut NodeBundle) {
     b.background_color = Color::rgb_u8(125, 164, 212).into();
 }
 
-fn c_text(_a: &AssetServer, b: &mut TextBundle) {
+pub fn c_yellow(b: &mut NodeBundle) {
+    b.background_color = Color::rgb_u8(100, 100, 50).into();
+}
+
+pub fn c_text(_a: &AssetServer, b: &mut TextBundle) {
     b.style.margin = UiRect::all(Val::Px(10.));
 }
 
-fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
+pub fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
     let s = &mut b.style;
     s.width = Val::Px(64.);
     s.height = Val::Px(24.);
@@ -138,7 +145,7 @@ fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
     b.image = assets.load("button.png").into();
 }
 
-fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
+pub fn c_button_middle(assets: &AssetServer, b: &mut ButtonBundle) {
     let s = &mut b.style;
     s.width = Val::Px(64.);
     s.height = Val::Px(24.);
@@ -148,44 +155,22 @@ fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
     b.image = assets.load("button.png").into();
 }
 
-fn c_grid(b: &mut NodeBundle) {
+pub fn c_grid(b: &mut NodeBundle) {
     b.style.width = Val::Px(200.);
     b.style.height = Val::Px(200.);
     b.style.margin = UiRect::all(Val::Px(10.));
 }
 
-fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
+pub fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
     b.style.width = Val::Px(32.);
     b.style.height = Val::Px(32.);
     b.image = assets.load("item_slot.png").into();
 }
 
-fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
+pub fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
     s.font = assets.load("prstartk.ttf").into();
     s.font_size = 8.;
     s.color = Color::WHITE.into();
-}
-```
-
-Some classes only depend a single bundle. Others depend on an AssetServer to manipulate their respective types.
-It is recommended that you only set the fields you wish to overwrite in your classes. Be careful, for instance, of using ```..default()``` as this will overwrite even the fields you don't specify. This is very bad when combining classes using the tuple syntax.
-
-## Class Helpers
-To make creating classes a little less verbose, there is an optional module you can import called **class_helpers**.
-This module is made available by enabling the feature flag **class_helpers** in your Cargo.toml file. It includes various helper functions and constants to make your life easier. It is recommended that you put your class functions in their own module when using these helpers to avoid namespace pollution with the rest of your UI code.
-
-```rust
-use bevy_ui_dsl::*;
-use bevy_ui_dsl::class_helpers::*;
-
-fn c_node(b: &mut NodeBundle) {
-    let s = &mut b.style;
-    s.width = pc(50);
-    s.height = pc(50);
-    s.flex_direction = COLUMN;
-    s.justify_content = JUSTIFY_CENTER;
-    s.align_items = ALIGN_CENTER;
-    s.padding = all(px(10));
 }
 ```
 

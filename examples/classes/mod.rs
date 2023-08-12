@@ -6,11 +6,10 @@ pub fn c_root(b: &mut NodeBundle) {
     b.style.height = Val::Percent(100.)
 }
 
-pub fn c_half(b: &mut NodeBundle) {
+pub fn c_column(b: &mut NodeBundle) {
     let s = &mut b.style;
-    s.width = Val::Percent(50.);
-    s.height = Val::Percent(100.);
     s.flex_direction = FlexDirection::Column;
+    s.flex_grow = 1.0;
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
     s.padding = UiRect::all(Val::Px(10.));
@@ -22,6 +21,10 @@ pub fn c_green(b: &mut NodeBundle) {
 
 pub fn c_blue(b: &mut NodeBundle) {
     b.background_color = Color::rgb_u8(125, 164, 212).into();
+}
+
+pub fn c_yellow(b: &mut NodeBundle) {
+    b.background_color = Color::rgb_u8(100, 100, 50).into();
 }
 
 pub fn c_text(_a: &AssetServer, b: &mut TextBundle) {
@@ -38,7 +41,7 @@ pub fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
     b.image = assets.load("button.png").into();
 }
 
-pub fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
+pub fn c_button_middle(assets: &AssetServer, b: &mut ButtonBundle) {
     let s = &mut b.style;
     s.width = Val::Px(64.);
     s.height = Val::Px(24.);

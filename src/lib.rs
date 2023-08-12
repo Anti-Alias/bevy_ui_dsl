@@ -6,7 +6,7 @@ pub mod class_helpers;
 
 use bevy_text::TextStyle;
 pub use widgets::*;
-use bevy_ui::node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle};
+use bevy_ui::{node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle}, prelude::AtlasImageBundle};
 use bevy_asset::AssetServer;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
@@ -63,8 +63,8 @@ pub trait Class<B> {
     fn apply(self, b: &mut B);
 }
 
-impl<T> Class<T> for () {
-    fn apply(self, _b: &mut T) {}
+impl<B> Class<B> for () {
+    fn apply(self, _b: &mut B) {}
 }
 
 impl<F, B> Class<B> for F
@@ -76,10 +76,10 @@ where
     }
 }
 
-impl<F1, F2, B> Class<B> for (F1, F2)
+impl<C1, C2, B> Class<B> for (C1, C2)
 where
-    F1: Class<B>,
-    F2: Class<B>,
+    C1: Class<B>,
+    C2: Class<B>,
 {
     fn apply(self, b: &mut B) {
         self.0.apply(b);
@@ -87,11 +87,11 @@ where
     }
 }
 
-impl<F1, F2, F3, B> Class<B> for (F1, F2, F3)
+impl<C1, C2, C3, B> Class<B> for (C1, C2, C3)
 where
-    F1: Class<B>,
-    F2: Class<B>,
-    F3: Class<B>,
+    C1: Class<B>,
+    C2: Class<B>,
+    C3: Class<B>,
 {
     fn apply(self, b: &mut B) {
         self.0.apply(b);
@@ -100,12 +100,12 @@ where
     }
 }
 
-impl<F1, F2, F3, F4, B> Class<B> for (F1, F2, F3, F4)
+impl<C1, C2, C3, C4, B> Class<B> for (C1, C2, C3, C4)
 where
-    F1: Class<B>,
-    F2: Class<B>,
-    F3: Class<B>,
-    F4: Class<B>,
+    C1: Class<B>,
+    C2: Class<B>,
+    C3: Class<B>,
+    C4: Class<B>,
 {
     fn apply(self, b: &mut B) {
         self.0.apply(b);
@@ -127,6 +127,23 @@ impl Class<ImageBundle> for ImageBundle {
     }
 }
 
+impl Class<AtlasImageBundle> for AtlasImageBundle {
+    fn apply(self, b: &mut AtlasImageBundle) {
+        *b = self;
+    }
+}
+
+impl Class<TextBundle> for TextBundle {
+    fn apply(self, b: &mut TextBundle) {
+        *b = self;
+    }
+}
+
+impl Class<ButtonBundle> for ButtonBundle {
+    fn apply(self, b: &mut ButtonBundle) {
+        *b = self;
+    }
+}
 
 
 /// Something that can overwrite a value, typically a node bundle.
@@ -205,19 +222,31 @@ impl AssetClass<TextStyle> for TextStyle {
     }
 }
 
-/// Adds a helper method to [`Entity`] that allows it to be sent to an [`Option`][`Entity`]
-/// ergonomically.
-pub trait EntityWriter {
-    fn set(self, entity: &mut Option<Entity>);
+
+
+/// Adds a helper method to [`Entity`] that allows it to be sent to some container of an [`Entity`] ergonomically.
+pub trait EntityWriter<E> {
+    fn set(self, entity: &mut E);
+}
+
+/// Adds a helper method to [`Entity`] that allows it to be pushed to a Vec of entities ergonomically.
+pub trait EntityPusher {
     fn push(self, destination: &mut Vec<Entity>);
 }
 
-impl EntityWriter for Entity {
-    /// Copies this entity into an Option.
+impl EntityWriter<Option<Entity>> for Entity {
     fn set(self, entity: &mut Option<Entity>) {
         *entity = Some(self);
     }
-    /// Pushes a copy of this Entity into a Vec.
+}
+
+impl EntityWriter<Entity> for Entity {
+    fn set(self, entity: &mut Entity) {
+        *entity = self;
+    }
+}
+
+impl EntityPusher for Entity {
     fn push(self, entities: &mut Vec<Entity>) {
         entities.push(self);
     }
