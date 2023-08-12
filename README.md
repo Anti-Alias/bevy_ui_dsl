@@ -23,7 +23,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     
     // "root" usually kicks things off. It behaves the same as "node", but takes different arguments.
     root(c_root, &assets, &mut commands, |p| {                                  // Spawns the root NodeBundle. AssetServer and Commands get propagated.
-        node((c_column, c_green), p, |p| {                                      // Spawns the left pane as a NodeBundle.
+        node((c_column, c_green), p, |p| {                                      // Spawns the left column as a NodeBundle.
             text("This is the left pane!", c_text, c_pixel, p);                 // Spawns a TextBundle.
             text("Do you like it?", c_text, c_pixel, p);
             text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya);      // Spawns a ButtonBundle with a TextBundle child in the middle. Convenience widget.
@@ -32,7 +32,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
             });
             text("Le grid", c_text, c_pixel, p);
         });
-        node((c_column, c_blue), p, |p| {
+        node((c_column, c_blue), p, |p| {                                       // Spawns the middle column as a NodeBundle.
             text("This is the middle pane!", c_text, c_pixel, p);
             text("Indeed, I do!", c_text, c_pixel, p);
             text_button("Howdy", c_button_middle, c_pixel, p).set(&mut howdy);
@@ -42,7 +42,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
     // You can insert widgets to an existing entity after the fact.
     // Here, we're adding a third column to the UI.
     commands.entity(root_id).with_ui_children(&assets, |p| {
-        node((c_column, c_yellow), p, |p| {
+        node((c_column, c_yellow), p, |p| {                                     // Spawns the right column as a NodeBundle.
             text("This is the right pane!", c_text, c_pixel, p);
             text("I say, don't quit your day job...", c_text, c_pixel, p);
         });
