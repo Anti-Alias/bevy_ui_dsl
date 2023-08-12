@@ -50,8 +50,8 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
     // Inserts marker components into the gathered entities.
     // Useful when you need to interact with specific entities in the UI.
-    commands.entity(hiya_id).insert(UiId::HiyaButton);
-    commands.entity(howdy_id).insert(UiId::HowdyButton);
+    commands.entity(hiya).insert(UiId::HiyaButton);
+    commands.entity(howdy).insert(UiId::HowdyButton);
 }
 
 ```
