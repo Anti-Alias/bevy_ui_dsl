@@ -93,7 +93,7 @@ So, instead of:
 ```rust
 text_button("Hiya", c_button_left, c_pixel, p).set(&mut hiya)
 /// ... then later ...
-commands.entity(hiya.unwrap()).insert(UiId::HiyaButton);
+commands.entity(hiya).insert(UiId::HiyaButton);
 ```
 One can write:
 ```rust
