@@ -22,7 +22,7 @@ fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<U
 
     // Obligatory camera
     commands.spawn(Camera2dBundle::default());
-    scale.scale = 2.0;
+    scale.0 = 2.0;
 
     // Spawns ui and gathers entity ids
     let mut hiya = None;

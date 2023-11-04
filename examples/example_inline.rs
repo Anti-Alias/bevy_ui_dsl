@@ -22,7 +22,7 @@ fn main() {
 fn startup(mut commands: Commands, assets: Res<AssetServer>, mut scale: ResMut<UiScale>) {
 
     commands.spawn(Camera2dBundle::default());
-    scale.scale = 2.0;
+    scale.0 = 2.0;
 
     root(c_root, &assets, &mut commands, |p| {
         node((c_half, c_green), p, |p| {
