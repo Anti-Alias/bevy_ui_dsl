@@ -1,41 +1,47 @@
 //! This crate simplifies the process of creating widgets in bevy using a simple extensible DSL.
 
-mod widgets;
 #[cfg(feature = "class_helpers")]
 pub mod class_helpers;
+mod widgets;
 
-use bevy_text::TextStyle;
-pub use widgets::*;
-use bevy_ui::node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle};
 use bevy_asset::AssetServer;
+use bevy_ecs::bundle::Bundle;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
-use bevy_ecs::bundle::Bundle;
-use bevy_hierarchy::{ChildBuilder, BuildChildren};
-
+use bevy_hierarchy::{BuildChildren, ChildBuilder};
+use bevy_text::TextStyle;
+use bevy_ui::node_bundles::{ButtonBundle, ImageBundle, NodeBundle, TextBundle};
+pub use widgets::*;
 
 /// Wrapper for [`ChildBuilder`] that also propogates an [`AssetServer`] for the children that need it.
 // It has enough ' for a lifetime ;)
 pub struct UiChildBuilder<'a, 'b, 'c, 'd> {
     builder: &'a mut ChildBuilder<'b, 'c, 'd>,
-    assets: &'a AssetServer
+    assets: &'a AssetServer,
 }
 
 impl<'a, 'b, 'c, 'd> UiChildBuilder<'a, 'b, 'c, 'd> {
+    /// Create a new [`UiChildBuilder`] for adding to children of a node.
+    pub fn new(builder: &'a mut ChildBuilder<'b, 'c, 'd>, assets: &'a AssetServer) -> Self {
+        Self { builder, assets }
+    }
+
     pub fn spawn(&mut self, bundle: impl Bundle) -> UiEntityCommands<'a, 'b, 'c, '_> {
         let commands: EntityCommands<'b, 'c, '_> = self.builder.spawn(bundle);
         UiEntityCommands {
             assets: self.assets,
-            commands
+            commands,
         }
     }
-    pub fn assets(&self) -> &AssetServer { self.assets }
+    pub fn assets(&self) -> &AssetServer {
+        self.assets
+    }
 }
 
 /// Wrapper for [`EntityCommands`] that also propagates an [`AssetServer`] for the children that need it.
 pub struct UiEntityCommands<'a, 'b, 'c, 'd> {
     commands: EntityCommands<'b, 'c, 'd>,
-    assets: &'a AssetServer
+    assets: &'a AssetServer,
 }
 
 impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
@@ -50,7 +56,7 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
         self.commands.with_children(|builder| {
             let mut ui_builder = UiChildBuilder {
                 assets: self.assets,
-                builder
+                builder,
             };
             spawn_children(&mut ui_builder);
         });
@@ -127,8 +133,6 @@ impl Class<ImageBundle> for ImageBundle {
     }
 }
 
-
-
 /// Something that can overwrite a value, typically a node bundle.
 /// Depends on an [`AssetServer`], unlike [`Class`].
 pub trait AssetClass<B> {
@@ -141,7 +145,7 @@ impl<T> AssetClass<T> for () {
 
 impl<F, B> AssetClass<B> for F
 where
-    F: FnOnce(&AssetServer, &mut B)
+    F: FnOnce(&AssetServer, &mut B),
 {
     fn apply(self, a: &AssetServer, b: &mut B) {
         self(a, b);
