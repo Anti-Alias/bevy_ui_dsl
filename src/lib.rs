@@ -1,17 +1,17 @@
 //! This crate simplifies the process of creating widgets in bevy using a simple extensible DSL.
 
-mod widgets;
 #[cfg(feature = "class_helpers")]
 pub mod class_helpers;
+mod widgets;
 
-use bevy_text::TextStyle;
 pub use widgets::*;
-use bevy_ui::node_bundles::{NodeBundle, ImageBundle, TextBundle, ButtonBundle};
 use bevy_asset::AssetServer;
+use bevy_ecs::bundle::Bundle;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
-use bevy_ecs::bundle::Bundle;
 use bevy_hierarchy::{BuildChildren, ChildBuilder};
+use bevy_text::TextStyle;
+use bevy_ui::node_bundles::{ButtonBundle, ImageBundle, NodeBundle, TextBundle};
 
 
 /// Wrapper for [`ChildBuilder`] that also propogates an [`AssetServer`] for the children that need it.
@@ -21,14 +21,22 @@ pub struct UiChildBuilder<'a, 'b> {
 }
 
 impl<'a, 'b> UiChildBuilder<'a, 'b> {
+
+    /// Create a new [`UiChildBuilder`] for adding to children of a node.
+    pub fn new(builder: &'a mut ChildBuilder<'b>, assets: &'a AssetServer) -> Self {
+        Self { builder, assets }
+    }
+
     pub fn spawn<'c>(&'c mut self, bundle: impl Bundle) -> UiEntityCommands<'a, 'c> {
         let commands: EntityCommands<'c> = self.builder.spawn(bundle);
         UiEntityCommands {
             assets: self.assets,
-            commands
+            commands,
         }
     }
-    pub fn assets(&self) -> &AssetServer { self.assets }
+    pub fn assets(&self) -> &AssetServer {
+        self.assets
+    }
 }
 
 /// Wrapper for [`EntityCommands`] that also propagates an [`AssetServer`] for the children that need it.
@@ -49,7 +57,7 @@ impl<'a, 'b> UiEntityCommands<'a, 'b> {
         self.commands.with_children(move |builder| {
             let mut ui_builder = UiChildBuilder {
                 assets: self.assets,
-                builder
+                builder,
             };
             spawn_children(&mut ui_builder);
         });
@@ -126,8 +134,6 @@ impl Class<ImageBundle> for ImageBundle {
     }
 }
 
-
-
 /// Something that can overwrite a value, typically a node bundle.
 /// Depends on an [`AssetServer`], unlike [`Class`].
 pub trait AssetClass<B> {
@@ -140,7 +146,7 @@ impl<T> AssetClass<T> for () {
 
 impl<F, B> AssetClass<B> for F
 where
-    F: FnOnce(&AssetServer, &mut B)
+    F: FnOnce(&AssetServer, &mut B),
 {
     fn apply(self, a: &AssetServer, b: &mut B) {
         self(a, b);
