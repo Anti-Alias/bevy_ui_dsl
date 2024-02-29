@@ -32,11 +32,10 @@ pub fn rooti(
     commands
         .spawn((bundle, extras))
         .with_children(|builder| {
-            let mut builder = UiChildBuilder {
+            children(&mut UiChildBuilder {
                 builder,
                 assets
-            };
-            children(&mut builder);
+            });
         })
         .id()
 }
@@ -69,10 +68,7 @@ pub fn blanki(
         .with_children(|builder| {
             let mut bundle = NodeBundle::default();
             class.apply(&mut bundle);
-            let mut builder = UiChildBuilder {
-                builder,
-                assets
-            };
+            let mut builder = UiChildBuilder { builder, assets };
             builder.spawn((bundle, extras)).with_children(children);
         })
         .id()

@@ -11,19 +11,18 @@ use bevy_asset::AssetServer;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::system::EntityCommands;
 use bevy_ecs::bundle::Bundle;
-use bevy_hierarchy::{ChildBuilder, BuildChildren};
+use bevy_hierarchy::{BuildChildren, ChildBuilder};
 
 
 /// Wrapper for [`ChildBuilder`] that also propogates an [`AssetServer`] for the children that need it.
-// It has enough ' for a lifetime ;)
-pub struct UiChildBuilder<'a, 'b, 'c, 'd> {
-    builder: &'a mut ChildBuilder<'b, 'c, 'd>,
-    assets: &'a AssetServer
+pub struct UiChildBuilder<'a, 'b> {
+    builder: &'a mut ChildBuilder<'b>,
+    assets: &'a AssetServer,
 }
 
-impl<'a, 'b, 'c, 'd> UiChildBuilder<'a, 'b, 'c, 'd> {
-    pub fn spawn(&mut self, bundle: impl Bundle) -> UiEntityCommands<'a, 'b, 'c, '_> {
-        let commands: EntityCommands<'b, 'c, '_> = self.builder.spawn(bundle);
+impl<'a, 'b> UiChildBuilder<'a, 'b> {
+    pub fn spawn<'c>(&'c mut self, bundle: impl Bundle) -> UiEntityCommands<'a, 'c> {
+        let commands: EntityCommands<'c> = self.builder.spawn(bundle);
         UiEntityCommands {
             assets: self.assets,
             commands
@@ -33,12 +32,12 @@ impl<'a, 'b, 'c, 'd> UiChildBuilder<'a, 'b, 'c, 'd> {
 }
 
 /// Wrapper for [`EntityCommands`] that also propagates an [`AssetServer`] for the children that need it.
-pub struct UiEntityCommands<'a, 'b, 'c, 'd> {
-    commands: EntityCommands<'b, 'c, 'd>,
+pub struct UiEntityCommands<'a, 'b> {
+    commands: EntityCommands<'b>,
     assets: &'a AssetServer
 }
 
-impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
+impl<'a, 'b> UiEntityCommands<'a, 'b> {
     pub fn id(&self) -> Entity {
         self.commands.id()
     }
@@ -47,7 +46,7 @@ impl<'a, 'b, 'c, 'd> UiEntityCommands<'a, 'b, 'c, 'd> {
         self
     }
     pub fn with_children(mut self, spawn_children: impl FnOnce(&mut UiChildBuilder)) -> Self {
-        self.commands.with_children(|builder| {
+        self.commands.with_children(move |builder| {
             let mut ui_builder = UiChildBuilder {
                 assets: self.assets,
                 builder
