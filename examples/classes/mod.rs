@@ -17,11 +17,11 @@ pub fn c_half(b: &mut NodeBundle) {
 }
 
 pub fn c_green(b: &mut NodeBundle) {
-    b.background_color = Color::rgb_u8(125, 212, 148).into();
+    b.background_color = Color::srgb_u8(125, 212, 148).into();
 }
 
 pub fn c_blue(b: &mut NodeBundle) {
-    b.background_color = Color::rgb_u8(125, 164, 212).into();
+    b.background_color = Color::srgb_u8(125, 164, 212).into();
 }
 
 pub fn c_text(_a: &AssetServer, b: &mut TextBundle) {
@@ -34,8 +34,8 @@ pub fn c_button_left(assets: &AssetServer, b: &mut ButtonBundle) {
     s.height = Val::Px(24.);
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
-    b.background_color = Color::rgb_u8(66, 135, 245).into();
     b.image = assets.load("button.png").into();
+    b.image.color = Color::srgb_u8(66, 135, 245)
 }
 
 pub fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
@@ -44,8 +44,8 @@ pub fn c_button_right(assets: &AssetServer, b: &mut ButtonBundle) {
     s.height = Val::Px(24.);
     s.justify_content = JustifyContent::Center;
     s.align_items = AlignItems::Center;
-    b.background_color = Color::rgb_u8(57, 179, 118).into();
     b.image = assets.load("button.png").into();
+    b.image.color = Color::srgb_u8(57, 179, 118);
 }
 
 pub fn c_grid(b: &mut NodeBundle) {
@@ -61,7 +61,7 @@ pub fn c_inv_slot(assets: &AssetServer, b: &mut ImageBundle) {
 }
 
 pub fn c_pixel(assets: &AssetServer, s: &mut TextStyle) {
-    s.font = assets.load("prstartk.ttf").into();
+    s.font = assets.load("prstartk.ttf");
     s.font_size = 8.;
-    s.color = Color::WHITE.into();
+    s.color = Color::WHITE;
 }
