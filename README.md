@@ -1,3 +1,11 @@
+# NOTICE:
+This crate will not be upgrading to the 0.15 version of Bevy for the forseeable future.
+Historically, this crate relied on the various bundle types that came with Bevy.
+Most, if not all have been deprecated at this point, making upgrading this crate difficult without major changes. 
+That being said, I am open to PRs that can port the current functionality over without requiring
+the use of these deprecated bundles.
+I will keep an eye out.
+
 # Bevy UI DSL
 
 A tiny, plugin-less, macro-less "domain specific language" designed to make building UIs in Bevy more pleasant. This DSL uses the same ingredients that **bevy_ui** uses, so those already familiar with **bevy_ui** should have an easy time learning it.
